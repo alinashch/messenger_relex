@@ -4,6 +4,7 @@ import com.example.chat_relex.models.Request.LoginForm;
 import com.example.chat_relex.models.Request.SignUpForm;
 import com.example.chat_relex.models.Response.UserResponse;
 import com.example.chat_relex.models.entity.UserEntity;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public interface UserService {
     void deleteById(long id);
 
     UserResponse getByUserId(Long id);
+    UserResponse getByUserIdBeforeAuthentication (Long id,  Authentication authentication);
 
     UserResponse login(LoginForm loginForm);
 

@@ -5,11 +5,12 @@ import com.example.chat_relex.models.Request.SignUpForm;
 import com.example.chat_relex.models.Request.UpdateEmailInfoForm;
 import com.example.chat_relex.models.Request.UpdatePersonalInfoForm;
 import com.example.chat_relex.models.Response.UserResponse;
-import com.example.chat_relex.models.entity.UserEntity;
 import com.example.chat_relex.service.TokenService;
 import com.example.chat_relex.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,13 +35,14 @@ public class UserController {
     @PostMapping("/sign-up")
     public ResponseEntity<?> register(@Valid @RequestBody SignUpForm signUpForm) {
         UserResponse user= userService.save(signUpForm);
+
         return ResponseBuilder.build(CREATED, Map.of(
                 "tokens", tokenService.createTokens(user)
         ));
     }
 
     @GetMapping("/allUsers")
-    public ResponseEntity<?> register() {
+    public ResponseEntity<?> getAllUsers() {
         List<UserResponse> userResponses = userService.findAll();
         return ResponseBuilder.build(OK, userResponses);
     }
@@ -48,6 +50,10 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginForm loginForm) {
         UserResponse user = userService.login(loginForm);
+        Map<String, String> tok=tokenService.createTokens(user);
+        for(String s:tok.keySet()){
+            System.out.println(s+" "+tok.get(s));
+        }
         return ResponseBuilder.build(OK, Map.of(
                 "tokens", tokenService.createTokens(user)
         ));
@@ -62,6 +68,12 @@ public class UserController {
     @GetMapping("/{UserId}")
     public ResponseEntity<?> getUSer(@PathVariable("UserId") Long id) {
        UserResponse userResponses= userService.getByUserId(id);
+        return ResponseBuilder.build(OK, userResponses);
+    }
+
+    @GetMapping("/before/{UserId}")
+    public ResponseEntity<?> getUSerBefore(@PathVariable("UserId") Long id, Authentication authentication) {
+        UserResponse userResponses= userService.getByUserIdBeforeAuthentication(id, authentication);
         return ResponseBuilder.build(OK, userResponses);
     }
 

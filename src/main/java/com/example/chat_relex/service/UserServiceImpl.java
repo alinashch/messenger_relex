@@ -10,6 +10,7 @@ import com.example.chat_relex.models.Response.UserResponse;
 import com.example.chat_relex.models.entity.UserEntity;
 import com.example.chat_relex.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-
     private final UserMapper userMapper;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -34,6 +34,7 @@ public class UserServiceImpl implements UserService {
     public List<UserResponse> findAll() {
         return userMapper.fromEntityToResponseList(userRepository.findAll());
     }
+
 
     @Override
     @Transactional
@@ -65,6 +66,12 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserResponse getByUserId(Long id) {
         return userMapper.fromUserEntityToUserResponse(userRepository.getById(id));
+    }
+
+    @Override
+    @Transactional
+    public UserResponse getByUserIdBeforeAuthentication (Long id,  Authentication authentication) {
+        return userMapper.fromUserEntityToUserResponse(userRepository.getById((Long) authentication.getPrincipal()));
     }
 
     @Override

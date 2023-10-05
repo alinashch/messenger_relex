@@ -9,6 +9,9 @@ import com.example.chat_relex.models.Response.UserResponse;
 import com.example.chat_relex.models.entity.RefreshTokenEntity;
 import com.example.chat_relex.models.entity.UserEntity;
 import com.example.chat_relex.repository.RefreshTokenRepository;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.auth0.jwt.algorithms.Algorithm;
 
+import java.nio.file.attribute.UserPrincipal;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -99,4 +103,5 @@ public class TokenService {
         }
         return userMapper.fromUserEntityToUserResponse( refreshTokenEntity.getUser());
     }
+
 }
