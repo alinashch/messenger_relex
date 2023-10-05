@@ -1,0 +1,33 @@
+
+spring:
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:postgresql://localhost:5432/relex_chat
+    username: postgres
+    password: 1234
+    driverClassName: org.postgresql.Driver
+  sql:
+    init:
+      platform: postgres
+  session:
+    maxFreshDays: 3
+    cleaningTimeInMinutes: 30
+
+security:
+  jwt:
+    secretKey: superDuper39Secret
+    expiresMs:
+      # 30 minutes
+      accessToken: 1 800 000
+      # in days
+      refreshToken: 30
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    url: /openapi.yaml
+    path: /swagger-ui.html
