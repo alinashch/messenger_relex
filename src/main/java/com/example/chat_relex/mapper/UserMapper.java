@@ -2,41 +2,29 @@ package com.example.chat_relex.mapper;
 
 
 import com.example.chat_relex.models.Request.SignUpForm;
-import com.example.chat_relex.models.Response.UserResponse;
-import com.example.chat_relex.models.entity.UserEntity;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import com.example.chat_relex.models.Request.UpdateProfileRequest;
+import com.example.chat_relex.models.dto.CredentialsDTO;
+import com.example.chat_relex.models.dto.RoleDTO;
+import com.example.chat_relex.models.dto.UserDTO;
+import com.example.chat_relex.models.entity.User;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
-import java.util.List;
 import java.util.Set;
 
-@Mapper
+@Mapper()
 public interface UserMapper {
 
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    UserResponse fromUserEntityToUserResponse(UserEntity user);
+    UserDTO toDTOFromEntity(User entity);
 
-    UserEntity fromUserResponseToUserEntity(UserResponse user);
+    User toEntityFromDTO(UserDTO dto);
+    CredentialsDTO toCredentialsDTOFromDTO(UserDTO dto);
 
-    @Mapping(source = "signUpForm.nickname", target = "nickname")
-    @Mapping(source = "signUpForm.surname", target = "surname")
-    @Mapping(source = "signUpForm.name", target = "name")
-    @Mapping(source = "signUpForm.password", target = "password")
-    @Mapping(source = "signUpForm.email", target = "email")
-    @Mapping(source = "signUpForm.login", target = "login")
-    UserEntity fromSignUpFormToEntity(SignUpForm signUpForm);
+    @Mapping(target = "isVerified", expression = "java(false)")
+    User toEntityFromRequest(SignUpForm request, Set<RoleDTO> roles, String passwordHash);
 
-    @Mapping(source = "signUpForm.nickname", target = "nickname")
-    @Mapping(source = "signUpForm.surname", target = "surname")
-    @Mapping(source = "signUpForm.name", target = "name")
-    @Mapping(source = "hashPassword", target = "password")
-    @Mapping(source = "signUpForm.email", target = "email")
-    @Mapping(source = "signUpForm.login", target = "login")
-    UserEntity fromSignUpFormToEntity(SignUpForm signUpForm, String hashPassword);
-
-
-    List<UserResponse> fromEntityToResponseList(List<UserEntity> set);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateEntity(UpdateProfileRequest request, @MappingTarget User entity);
 }
-

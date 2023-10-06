@@ -1,6 +1,7 @@
 package com.example.chat_relex.repository;
 
-import com.example.chat_relex.models.entity.UserEntity;
+import com.example.chat_relex.models.entity.Role;
+import com.example.chat_relex.models.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -11,38 +12,47 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
-    List<UserEntity> findAll();
+    List<User> findAll();
 
-    UserEntity save(UserEntity userEntity);
+    User save(User userEntity);
 
     void deleteById(long id);
 
-    UserEntity getById(Long id);
+    boolean existsByEmail(String email);
 
-    Optional<UserEntity> getByLogin(String login);
+    boolean existsByLogin(String login);
 
-    Optional<UserEntity> getByEmail(String email);
+    User getById(Long id);
+
+    Optional<User> getByLogin(String login);
+
+
+    Optional<User> getByEmail(String email);
+
+//    @Modifying
+//    @Query(value = "UPDATE  user_info   SET firstname = :name WHERE userId  = :id", nativeQuery = true)
+//    void updateName(@Param("id") Long Id,
+//                    @Param("name") String name);
+//
+//    @Modifying
+//    @Query(value = "UPDATE  user_info   SET lastname = :nickname WHERE userId  = :id", nativeQuery = true)
+//    void updateNickname(@Param("id") Long Id,
+//                        @Param("nickname") String nickname);
+//
+//    @Modifying
+//    @Query(value = "UPDATE  user_info   SET email = :email WHERE userId  = :id", nativeQuery = true)
+//    void updateEmail(@Param("id") Long id,
+//                     @Param("email") String email);
+//
+//    @Modifying
+//    @Query(value = "UPDATE  user_info   SET surname = :surname WHERE userId  = :id", nativeQuery = true)
+//    void updateSurname(@Param("id") Long id,
+//                       @Param("surname") String surname);
 
     @Modifying
-    @Query(value = "UPDATE  users_entity  SET name = :name WHERE id = :id", nativeQuery = true)
-    void updateName(@Param("id") Long Id,
-                    @Param("name") String name);
-
-    @Modifying
-    @Query(value = "UPDATE  users_entity  SET nickname = :nickname WHERE id = :id", nativeQuery = true)
-    void updateNickname(@Param("id") Long Id,
-                        @Param("nickname") String nickname);
-
-    @Modifying
-    @Query(value = "UPDATE  users_entity  SET email = :email WHERE id = :id", nativeQuery = true)
-    void updateEmail(@Param("id") Long id,
-                     @Param("email") String email);
-
-    @Modifying
-    @Query(value = "UPDATE  users_entity  SET surname = :surname WHERE id = :id", nativeQuery = true)
-    void updateSurname(@Param("id") Long id,
-                       @Param("surname") String surname);
+    @Query(value = "UPDATE user_info  SET is_Verified = true WHERE user_id  = :id",  nativeQuery = true)
+    void verifyUserById(@Param("id") Long id);
 
 }

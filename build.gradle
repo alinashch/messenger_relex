@@ -25,6 +25,15 @@ ext {
 }
 
 dependencies {
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mustache
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mustache', version: '3.1.4'
+
+    // https://mvnrepository.com/artifact/com.samskivert/samskivert
+    implementation group: 'com.samskivert', name: 'samskivert', version: '1.9'
+
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '3.1.4'
+
 // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-jdbc
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: '3.1.1'
 // https://mvnrepository.com/artifact/org.mapstruct/mapstruct
