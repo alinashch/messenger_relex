@@ -14,6 +14,8 @@ spring:
   sql:
     init:
       platform: postgres
+
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -25,14 +27,6 @@ spring:
           auth: true
           starttls.enable: true
           ssl.enable: true
-  security:
-    jwt:
-      secretKey: superDuper39Secret
-      expiresMs:
-        # 30 minutes
-        accessToken: 1 800 000
-        # in days
-        refreshToken: 30
 
 springdoc:
   api-docs:
@@ -40,3 +34,7 @@ springdoc:
   swagger-ui:
     url: /openapi.yaml
     path: /swagger-ui.html
+
+emailTemplate:
+  mainPage: https://www.musicman-vsu.online
+  verificationLink: https://www.musicman-vsu.online/auth/verify

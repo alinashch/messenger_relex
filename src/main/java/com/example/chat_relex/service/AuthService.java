@@ -2,6 +2,7 @@ package com.example.chat_relex.service;
 
 import com.example.chat_relex.Template.EmailTemplate;
 import com.example.chat_relex.exceptions.WrongCredentialsException;
+import com.example.chat_relex.exceptions.WrongInputLoginException;
 import com.example.chat_relex.models.Request.LoginForm;
 import com.example.chat_relex.models.Request.SignUpForm;
 import com.example.chat_relex.models.dto.TokensDTO;
@@ -13,9 +14,12 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -29,6 +33,8 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Value("${emailTemplate.mainPage}")
     private String mainPage;
 
@@ -39,15 +45,15 @@ public class AuthService {
     public TokensDTO signUp(SignUpForm request) {
         UserDTO registeredUser = userService.registerUser(request);
         UUID code = verificationService.createCodeAndSave(registeredUser);
-        sendCode(registeredUser, code);
+        //sendCode(registeredUser, code);
         return tokenService.createTokens(registeredUser);
     }
 
     @Async
-    private void sendCode(UserDTO user, UUID code) {
+    void sendCode(UserDTO user, UUID code) {
         emailService.sendTemplate(
                 user.getEmail(),
-                "Подтверждение регистрации на платформе Musicman",
+                "Подтверждение регистрации в чате relex",
                 EmailTemplate.VERIFICATION_USER,
                 new VerificationEmailDTO(
                         user.getFirstName() + " " + user.getLastName(),
@@ -70,14 +76,13 @@ public class AuthService {
 
     @Transactional
     public TokensDTO login(LoginForm request) {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword())
-            );
-        } catch (AuthenticationException e) {
-            throw new WrongCredentialsException("Неправильный логин  или пароль");
+        if(userService.getUserByLogin(request.getLogin())==null){
+            throw new WrongCredentialsException("Неправильный логин ");
         }
-        UserDTO user = userService.getUserByEmail(request.getLogin());
+        UserDTO user = userService.getUserByLogin(request.getLogin());
+        if (!bCryptPasswordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
+            throw new WrongInputLoginException("Неправильный пароль");
+        }
         return tokenService.createTokens(user);
     }
 }

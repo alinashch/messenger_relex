@@ -2,6 +2,7 @@ package com.example.chat_relex.mapper;
 
 
 import com.example.chat_relex.models.Request.SignUpForm;
+import com.example.chat_relex.models.Request.UpdateProfilePassword;
 import com.example.chat_relex.models.Request.UpdateProfileRequest;
 import com.example.chat_relex.models.dto.CredentialsDTO;
 import com.example.chat_relex.models.dto.RoleDTO;
@@ -24,7 +25,11 @@ public interface UserMapper {
 
     @Mapping(target = "isVerified", expression = "java(false)")
     User toEntityFromRequest(SignUpForm request, Set<RoleDTO> roles, String passwordHash);
+    User toEntityFromUpdateProfilePassword(UpdateProfilePassword request, Set<RoleDTO> roles, String passwordHash);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntity(UpdateProfileRequest request, @MappingTarget User entity);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateEntity(UpdateProfilePassword request, @MappingTarget User entity);
 }

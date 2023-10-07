@@ -52,15 +52,12 @@ public class TokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
 
-    @Value("${security.jwt.secretKey}")
-    private String secretKey;
+    private String secretKey="superDuper39Secret";
 
-    @Value("${security.jwt.expiresMs.accessToken}")
-    private Integer accessTokenExpireTimeInMs;
+    private Integer accessTokenExpireTimeInMs= 1800000;
 
-    @Value("${security.jwt.expiresMs.refreshToken}")
     @Setter
-    private Integer refreshTokenExpireTimeInDays;
+    private Integer refreshTokenExpireTimeInDays=30;
 
     public void authenticate(String authHeader) {
         DecodedJWT decodedJWT = decodeJWT(authHeader);

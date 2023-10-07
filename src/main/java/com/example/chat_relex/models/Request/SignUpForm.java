@@ -40,7 +40,7 @@ public class SignUpForm {
     @NotBlank(message = "Имя не может быть пустым")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @Size(max = 100, message = "Имя не может быть больше 100 символов")
-    private String firstname;
+    private String firstName;
 
     @NotBlank(message = "Фамилия не может быть пустой")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)

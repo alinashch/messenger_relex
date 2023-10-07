@@ -1,9 +1,6 @@
 package com.example.chat_relex.controller;
 
-import com.example.chat_relex.models.Request.LoginForm;
-import com.example.chat_relex.models.Request.RefreshTokenRequest;
-import com.example.chat_relex.models.Request.SignUpForm;
-import com.example.chat_relex.models.Request.UpdateProfileRequest;
+import com.example.chat_relex.models.Request.*;
 import com.example.chat_relex.models.dto.CredentialsDTO;
 import com.example.chat_relex.models.dto.ExceptionDTO;
 import com.example.chat_relex.models.dto.TokensDTO;
@@ -23,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -54,7 +52,7 @@ public class AuthController {
             })
     })
     public ResponseEntity<?> getCredentials(Authentication authentication) {
-        UserDTO user = userService.getUserByEmail((String) authentication.getPrincipal());
+        UserDTO user = userService.getUserByLogin((String) authentication.getPrincipal());
         return ResponseBuilder.build(OK, userService.getCredentials(user));
     }
 
@@ -127,12 +125,13 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "Пользователь успешно вошел в систему", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = TokensDTO.class))
             }),
-            @ApiResponse(responseCode = "400", description = "Неправильный пароль или почта", content = {
+            @ApiResponse(responseCode = "400", description = "Неправильный пароль или логин", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
             })
     })
     @SecurityRequirements
     public ResponseEntity<?> loginUser(@RequestBody @Valid LoginForm request) {
+
         return ResponseBuilder.build(OK, authService.login(request));
     }
 
@@ -156,7 +155,7 @@ public class AuthController {
         return ResponseBuilder.build(OK, tokenService.refreshAccessToken(request));
     }
 
-    @PutMapping("/profile")
+    @PutMapping("/profile/update/personal-information")
     @Operation(summary = "Обновление информации о пользователе", tags = AUTH, responses = {
             @ApiResponse(responseCode = "200", description = "Информация обновлена", content = {
                     @Content(mediaType = "application/json")
@@ -173,14 +172,34 @@ public class AuthController {
                             schema = @Schema(implementation = ExceptionDTO.class))
                     })
     })
-    public ResponseEntity<?> updateProfile(@RequestBody @Valid UpdateProfileRequest request,
+    public ResponseEntity<?> updateProfileInformation(@RequestBody @Valid UpdateProfileRequest request,
                                            Authentication authentication) {
-        UserDTO user = userService.getUserByEmailWithVerificationCheck((String) authentication.getPrincipal());
+        UserDTO user = userService.getUserByLogin((String) authentication.getPrincipal());
+        System.out.println((String) authentication.getPrincipal());
         userService.updateProfile(user, request);
         return ResponseBuilder.buildWithoutBodyResponse(OK);
     }
 
-    @DeleteMapping("/{id}")
+    @PutMapping("/profile/update/password")
+    @Operation(summary = "Обновление информации о пользователе", tags = AUTH, responses = {
+            @ApiResponse(responseCode = "200", description = "Информация обновлена", content = {
+                    @Content(mediaType = "application/json")
+            }),
+            @ApiResponse(responseCode = "400", description = "Невалидные входные данные", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
+            }),
+            @ApiResponse(responseCode = "403", description = "Нет доступа", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
+            })
+    })
+    public ResponseEntity<?> updateProfilePassword(@RequestBody @Valid UpdateProfilePassword request,
+                                                      Authentication authentication) {
+        UserDTO user = userService.getUserByLogin((String) authentication.getPrincipal());
+        userService.updatePassword(user, request);
+        return ResponseBuilder.buildWithoutBodyResponse(OK);
+    }
+
+    @DeleteMapping("/delete")
     @Operation(summary = "Удаление пользователя", tags = AUTH, responses = {
             @ApiResponse(responseCode = "204", description = "Пользователь удален", content = {
                     @Content(mediaType = "application/json")
@@ -195,10 +214,12 @@ public class AuthController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
             })
     })
-    public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
-        userService.deleteUser(id);
+    public ResponseEntity<?> deleteUser( Authentication authentication) {
+        UserDTO user = userService.getUserByLogin((String) authentication.getPrincipal());
+        userService.deleteUser(user.getUserId());
         return ResponseBuilder.buildWithoutBodyResponse(NO_CONTENT);
     }
+
 
 
 }

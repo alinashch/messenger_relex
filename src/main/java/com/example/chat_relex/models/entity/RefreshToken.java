@@ -42,7 +42,7 @@ public class RefreshToken {
     @Column(nullable = false)
     private Instant validTill;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 }

@@ -31,28 +31,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> getByEmail(String email);
 
-//    @Modifying
-//    @Query(value = "UPDATE  user_info   SET firstname = :name WHERE userId  = :id", nativeQuery = true)
-//    void updateName(@Param("id") Long Id,
-//                    @Param("name") String name);
-//
-//    @Modifying
-//    @Query(value = "UPDATE  user_info   SET lastname = :nickname WHERE userId  = :id", nativeQuery = true)
-//    void updateNickname(@Param("id") Long Id,
-//                        @Param("nickname") String nickname);
-//
-//    @Modifying
-//    @Query(value = "UPDATE  user_info   SET email = :email WHERE userId  = :id", nativeQuery = true)
-//    void updateEmail(@Param("id") Long id,
-//                     @Param("email") String email);
-//
-//    @Modifying
-//    @Query(value = "UPDATE  user_info   SET surname = :surname WHERE userId  = :id", nativeQuery = true)
-//    void updateSurname(@Param("id") Long id,
-//                       @Param("surname") String surname);
-
     @Modifying
     @Query(value = "UPDATE user_info  SET is_Verified = true WHERE user_id  = :id",  nativeQuery = true)
     void verifyUserById(@Param("id") Long id);
+
+    @Modifying
+    @Query(value = "DELETE FROM refresh_token WHERE user_id = :userId ", nativeQuery = true)
+    void deleteToken(@Param("userId") Long id);
+
+    @Modifying
+    @Query(value = "DELETE FROM verification WHERE user_id = :userId ", nativeQuery = true)
+    void deleteVerification(@Param("userId") Long id);
 
 }

@@ -6,10 +6,12 @@ import com.example.chat_relex.exceptions.PasswordDoesNotMatchException;
 import com.example.chat_relex.exceptions.UserNotVerifiedException;
 import com.example.chat_relex.mapper.UserMapper;
 import com.example.chat_relex.models.Request.SignUpForm;
+import com.example.chat_relex.models.Request.UpdateProfilePassword;
 import com.example.chat_relex.models.Request.UpdateProfileRequest;
 import com.example.chat_relex.models.dto.CredentialsDTO;
 import com.example.chat_relex.models.dto.UserDTO;
 import com.example.chat_relex.models.entity.User;
+import com.example.chat_relex.repository.RefreshTokenRepository;
 import com.example.chat_relex.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -74,6 +76,7 @@ public class UserService {
         }
         User user = userMapper.toEntityFromRequest(
                 request, Set.of(roleService.getUserRole()), BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
+
         user = userRepository.save(user);
         return userMapper.toDTOFromEntity(user);
     }
@@ -103,7 +106,21 @@ public class UserService {
     }
 
     @Transactional
+    public void updatePassword(UserDTO user , UpdateProfilePassword request) {
+        if (!request.getPassword().equals(request.getRepeatPassword())) {
+            throw new PasswordDoesNotMatchException("Пароли не совпадают");
+        }
+        User entity = userMapper.toEntityFromDTO(user);
+        entity.setPasswordHash(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
+        System.out.println(entity.getEmail());
+        userMapper.updateEntity(request, entity);
+         userRepository.save(entity);
+    }
+
+    @Transactional
     public void deleteUser(Long userId) {
+        userRepository.deleteToken(userId);
+        userRepository.deleteVerification(userId);
         userRepository.delete(userRepository.findById(userId).orElseThrow(
                 () -> new EntityDoesNotExistException("Пользователь с данным ИД не существует")
         ));
