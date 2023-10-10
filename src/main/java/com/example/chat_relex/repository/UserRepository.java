@@ -1,5 +1,6 @@
 package com.example.chat_relex.repository;
 
+import com.example.chat_relex.models.entity.RefreshToken;
 import com.example.chat_relex.models.entity.Role;
 import com.example.chat_relex.models.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -42,5 +43,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query(value = "DELETE FROM verification WHERE user_id = :userId ", nativeQuery = true)
     void deleteVerification(@Param("userId") Long id);
+
 
 }

@@ -1,6 +1,6 @@
 package com.example.chat_relex.exceptions;
 
-public class PasswordDoesNotMatchException extends BaseException{
+public class PasswordDoesNotMatchException extends RuntimeException {
     public PasswordDoesNotMatchException() {
         super();
     }

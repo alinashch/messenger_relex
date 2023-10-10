@@ -18,9 +18,8 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -219,7 +218,19 @@ public class AuthController {
         userService.deleteUser(user.getUserId());
         return ResponseBuilder.buildWithoutBodyResponse(NO_CONTENT);
     }
-
-
+    @PostMapping("/signOut")
+    @Operation(summary = "Закрытие сессии ", tags = AUTH, responses = {
+            @ApiResponse(responseCode = "200", description = "Закрытие сессии", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = TokensDTO.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Невалидные входные данные", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
+            })
+    })
+    public ResponseEntity<?> signOut(Authentication authentication) {
+        userService.deleteSession((String) authentication.getPrincipal());
+        SecurityContextHolder.clearContext();
+        return ResponseBuilder.buildWithoutBodyResponse(NO_CONTENT);
+    }
 
 }

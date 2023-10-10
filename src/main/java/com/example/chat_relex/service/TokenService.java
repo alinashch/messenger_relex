@@ -52,7 +52,7 @@ public class TokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
 
-    private String secretKey="superDuper39Secret";
+    private String secretKey="chat_relex_token";
 
     private Integer accessTokenExpireTimeInMs= 1800000;
 
@@ -67,7 +67,7 @@ public class TokenService {
         setAuthToken(userDetails);
     }
 
-    private DecodedJWT decodeJWT(String authHeader) {
+    public DecodedJWT decodeJWT(String authHeader) {
         String token = authHeader;
         if (authHeader.startsWith(TOKEN_PREFIX)) {
             token = authHeader.substring(TOKEN_PREFIX.length());

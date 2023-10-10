@@ -31,7 +31,7 @@ public class TokenFilter {
 
     private final ObjectMapper objectMapper;
 
-    private String jwtKey="superDuper39Secret";
+    private String jwtKey="chat_relex_token";
 
     public void authenticate(String authHeader) {
         var decodedJWT = decodeJWT(authHeader);

@@ -1,9 +1,6 @@
 package com.example.chat_relex.service;
 
-import com.example.chat_relex.exceptions.EntityAlreadyExistsException;
-import com.example.chat_relex.exceptions.EntityDoesNotExistException;
-import com.example.chat_relex.exceptions.PasswordDoesNotMatchException;
-import com.example.chat_relex.exceptions.UserNotVerifiedException;
+import com.example.chat_relex.exceptions.*;
 import com.example.chat_relex.mapper.UserMapper;
 import com.example.chat_relex.models.Request.SignUpForm;
 import com.example.chat_relex.models.Request.UpdateProfilePassword;
@@ -33,6 +30,8 @@ public class UserService {
 
     private final RoleService roleService;
 
+    private final RefreshTokenRepository refreshTokenRepository;
+
 
     public UserDTO getUserByEmail(String email) {
         User user = userRepository.getByEmail(email).orElseThrow(
@@ -49,6 +48,7 @@ public class UserService {
     }
 
     public UserDTO getUserByLogin(String nickname) {
+
         User user = userRepository.getByLogin(nickname).orElseThrow(
                 () -> new EntityDoesNotExistException("Пользователь с данным логином не существует")
         );
@@ -92,11 +92,17 @@ public class UserService {
 
     @Transactional
     public CredentialsDTO getCredentials(UserDTO user) {
+        if(refreshTokenRepository.getAllByUser_UserId(user.getUserId())==0){
+            throw new TokenExpiredException("The token is not valid\n ");
+        }
         return userMapper.toCredentialsDTOFromDTO(user);
     }
 
     @Transactional
     public void updateProfile(UserDTO user, UpdateProfileRequest request) {
+        if(refreshTokenRepository.getAllByUser_UserId(user.getUserId())==0){
+            throw new TokenExpiredException("The token is not valid\n");
+        }
         if (userRepository.existsByLogin(request.getNickname())) {
             throw new EntityAlreadyExistsException("Пользователь с данным никнеймом уже существует");
         }
@@ -107,6 +113,9 @@ public class UserService {
 
     @Transactional
     public void updatePassword(UserDTO user , UpdateProfilePassword request) {
+        if(refreshTokenRepository.getAllByUser_UserId(user.getUserId())==0){
+            throw new TokenExpiredException("The token is not valid\n");
+        }
         if (!request.getPassword().equals(request.getRepeatPassword())) {
             throw new PasswordDoesNotMatchException("Пароли не совпадают");
         }
@@ -119,13 +128,22 @@ public class UserService {
 
     @Transactional
     public void deleteUser(Long userId) {
+        if(refreshTokenRepository.getAllByUser_UserId(userId)==0){
+            throw new TokenExpiredException("The token is not valid\n");
+        }
         userRepository.deleteToken(userId);
         userRepository.deleteVerification(userId);
         userRepository.delete(userRepository.findById(userId).orElseThrow(
                 () -> new EntityDoesNotExistException("Пользователь с данным ИД не существует")
         ));
     }
-
+    @Transactional
+    public void deleteSession(String  login) {
+        if(refreshTokenRepository.getAllByUser_UserId(userRepository.getByLogin(login).get().getUserId())==0){
+            throw new TokenExpiredException("The token is not valid\n");
+        }
+        userRepository.deleteToken(userRepository.getByLogin(login).get().getUserId());
+    }
 
 
 }

@@ -1,6 +1,6 @@
 package com.example.chat_relex.exceptions;
 
-public class WrongInputLoginException extends BaseException{
+public class WrongInputLoginException extends RuntimeException {
     public WrongInputLoginException() {
         super();
     }

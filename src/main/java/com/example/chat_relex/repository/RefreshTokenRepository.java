@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -25,6 +26,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
                              @Param("expireDate") Instant expireDate,
                              @Param("userId") Long userId);
 
-
-
+    @Query(value = """
+                    SELECT COUNT(b) FROM refresh_token b WHERE  b.user_id =:userId """, nativeQuery = true)
+    long getAllByUser_UserId( @Param("userId") Long userId);
 }

@@ -1,6 +1,6 @@
 package com.example.chat_relex.exceptions;
 
-public class TokenExpiredException extends BaseException{
+public class TokenExpiredException extends RuntimeException{
     public TokenExpiredException(String message) {
         super(message);
     }
