@@ -20,7 +20,6 @@ public class ResponseBuilder {
         return ResponseEntity.status(httpStatus).body(data);
     }
 
-
     public static ResponseEntity<?> buildWithoutBodyResponse(HttpStatus httpStatus) {
         return ResponseEntity.status(httpStatus).build();
     }

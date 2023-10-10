@@ -13,21 +13,15 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 
 import static org.apache.naming.ResourceRef.AUTH;
 import static org.springframework.http.HttpStatus.*;
-import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
-import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 @RestController
 @AllArgsConstructor
@@ -224,6 +218,9 @@ public class AuthController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = TokensDTO.class))
             }),
             @ApiResponse(responseCode = "400", description = "Невалидные входные данные", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
+            }),
+            @ApiResponse(responseCode = "403", description = "Нет доступа", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
             })
     })

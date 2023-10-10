@@ -1,5 +1,6 @@
 package com.example.chat_relex.confirurations;
 
+import com.example.chat_relex.mapper.MessageStatusMapper;
 import com.example.chat_relex.mapper.RoleMapper;
 import com.example.chat_relex.mapper.UserMapper;
 import com.example.chat_relex.mapper.VerificationMapper;
@@ -24,5 +25,9 @@ public class MapStructConfiguration {
         return VerificationMapper.INSTANCE;
     }
 
+    @Bean
+    public MessageStatusMapper messageStatusMapper() {
+        return MessageStatusMapper.INSTANCE;
+    }
 
 }
