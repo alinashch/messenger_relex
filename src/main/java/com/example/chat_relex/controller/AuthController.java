@@ -6,7 +6,7 @@ import com.example.chat_relex.models.dto.ExceptionDTO;
 import com.example.chat_relex.models.dto.TokensDTO;
 import com.example.chat_relex.models.dto.UserDTO;
 import com.example.chat_relex.service.AuthService;
-import com.example.chat_relex.service.TokenService;
+import com.example.chat_relex.service.TokenUserService;
 import com.example.chat_relex.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,6 +20,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 import static org.apache.naming.ResourceRef.AUTH;
 import static org.springframework.http.HttpStatus.*;
 
@@ -29,7 +31,7 @@ import static org.springframework.http.HttpStatus.*;
 public class AuthController {
 
     private final AuthService authService;
-    private final TokenService tokenService;
+    private final TokenUserService tokenService;
     private final UserService userService;
 
     @GetMapping("/credentials")
@@ -44,8 +46,8 @@ public class AuthController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
             })
     })
-    public ResponseEntity<?> getCredentials(Authentication authentication) {
-        UserDTO user = userService.getUserByLogin((String) authentication.getPrincipal());
+    public ResponseEntity<?> getCredentials(Principal principal) {
+        UserDTO user = userService.getUserByLogin(principal.getName());
         return ResponseBuilder.build(OK, userService.getCredentials(user));
     }
 
@@ -66,7 +68,7 @@ public class AuthController {
     })
     @SecurityRequirements
     public ResponseEntity<?> signUpNewUserUsingForm(@RequestBody @Valid SignUpForm request) {
-        return ResponseBuilder.build(CREATED, authService.signUp(request));
+        return ResponseBuilder.build(OK, authService.signUp(request));
     }
 
     @PostMapping("/verify/{code}")
@@ -106,8 +108,8 @@ public class AuthController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
             })
     })
-    public ResponseEntity<?> resendCode(Authentication authentication) {
-        UserDTO user = userService.getUserByEmail((String) authentication.getPrincipal());
+    public ResponseEntity<?> resendCode(Principal principal) {
+        UserDTO user = userService.getUserByEmail(principal.getName());
         authService.resendCode(user);
         return ResponseBuilder.buildWithoutBodyResponse(OK);
     }
@@ -166,9 +168,8 @@ public class AuthController {
                     })
     })
     public ResponseEntity<?> updateProfileInformation(@RequestBody @Valid UpdateProfileRequest request,
-                                           Authentication authentication) {
-        UserDTO user = userService.getUserByLogin((String) authentication.getPrincipal());
-        System.out.println((String) authentication.getPrincipal());
+                                                      Principal principal) {
+        UserDTO user = userService.getUserByLogin(principal.getName());
         userService.updateProfile(user, request);
         return ResponseBuilder.buildWithoutBodyResponse(OK);
     }
@@ -186,8 +187,8 @@ public class AuthController {
             })
     })
     public ResponseEntity<?> updateProfilePassword(@RequestBody @Valid UpdateProfilePassword request,
-                                                      Authentication authentication) {
-        UserDTO user = userService.getUserByLogin((String) authentication.getPrincipal());
+                                                   Principal principal) {
+        UserDTO user = userService.getUserByLogin(principal.getName());
         userService.updatePassword(user, request);
         return ResponseBuilder.buildWithoutBodyResponse(OK);
     }
@@ -207,8 +208,8 @@ public class AuthController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
             })
     })
-    public ResponseEntity<?> deleteUser( Authentication authentication) {
-        UserDTO user = userService.getUserByLogin((String) authentication.getPrincipal());
+    public ResponseEntity<?> deleteUser( Principal principal) {
+        UserDTO user = userService.getUserByLogin(principal.getName());
         userService.deleteUser(user.getUserId());
         return ResponseBuilder.buildWithoutBodyResponse(NO_CONTENT);
     }
@@ -224,8 +225,8 @@ public class AuthController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
             })
     })
-    public ResponseEntity<?> signOut(Authentication authentication) {
-        userService.deleteSession((String) authentication.getPrincipal());
+    public ResponseEntity<?> signOut(Principal principal) {
+        userService.deleteSession(principal.getName());
         SecurityContextHolder.clearContext();
         return ResponseBuilder.buildWithoutBodyResponse(NO_CONTENT);
     }

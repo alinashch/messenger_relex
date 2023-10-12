@@ -11,7 +11,7 @@ import com.example.chat_relex.models.Request.RefreshTokenRequest;
 import com.example.chat_relex.models.dto.TokensDTO;
 import com.example.chat_relex.models.dto.UserDTO;
 import com.example.chat_relex.models.entity.RefreshToken;
-import com.example.chat_relex.repository.RefreshTokenRepository;
+import com.example.chat_relex.repository.RefreshUserTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +36,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class TokenService {
+public class TokenUserService {
 
     public static final String TOKEN_PREFIX = "Bearer ";
 
@@ -50,7 +50,7 @@ public class TokenService {
     private final UserDetailsService userDetailsService;
     private final UserService userService;
 
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshUserTokenRepository refreshTokenRepository;
 
     private String secretKey="chat_relex_token";
 

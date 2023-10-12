@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
-
 @Table(name = "message")
 @Entity
 @AllArgsConstructor
@@ -18,28 +16,14 @@ public class Message {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long MessageId;
+    private Long messageId;
 
     @Column(nullable = false)
-    private String chatId;
+    private String message;
 
     @Column(nullable = false)
-    private Long senderId;
+    private String sender;
 
     @Column(nullable = false)
-    private Long recipientId;
-
-    @Column(nullable = false)
-    private String senderNickname;
-
-    @Column(nullable = false)
-    private String recipientNickname;
-
-    @Column(nullable = false)
-    private String content;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "message_status_id")
-    private MessageStatus status;
-
+    private String room;
 }

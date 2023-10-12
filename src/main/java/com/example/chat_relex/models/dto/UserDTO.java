@@ -16,11 +16,15 @@ import java.util.Set;
 public class UserDTO implements UserDetails {
 
     private Long userId;
+
     private String firstName;
+
     private String lastName;
+
     private String  login;
     private String passwordHash;
     private String email;
+
     private String nickname;
     private Boolean isVerified;
     private Set<RoleDTO> roles;

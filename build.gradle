@@ -26,6 +26,8 @@ ext {
 
 dependencies {
 
+    implementation group: 'com.corundumstudio.socketio', name: 'netty-socketio', version: '2.0.3'
+
     // https://mvnrepository.com/artifact/org.springframework.security/spring-security-web
     implementation group: 'org.springframework.security', name: 'spring-security-web', version: '6.1.4'
 

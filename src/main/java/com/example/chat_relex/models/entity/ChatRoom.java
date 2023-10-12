@@ -1,7 +1,12 @@
 package com.example.chat_relex.models.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.UUID;
 
 @Table(name = "chat_room")
 @Entity
@@ -9,19 +14,15 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-@Builder
 public class ChatRoom {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ChatRoomId;
+    private Long charRoomId;
 
     @Column(nullable = false)
-    private String chatId;
+    private UUID token;
 
-    @Column(nullable = false)
-    private Long senderId;
-
-    @Column(nullable = false)
-    private Long recipientId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User user;
 }

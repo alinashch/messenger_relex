@@ -8,7 +8,7 @@ import com.example.chat_relex.models.Request.UpdateProfileRequest;
 import com.example.chat_relex.models.dto.CredentialsDTO;
 import com.example.chat_relex.models.dto.UserDTO;
 import com.example.chat_relex.models.entity.User;
-import com.example.chat_relex.repository.RefreshTokenRepository;
+import com.example.chat_relex.repository.RefreshUserTokenRepository;
 import com.example.chat_relex.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ public class UserService {
 
     private final RoleService roleService;
 
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshUserTokenRepository refreshTokenRepository;
 
 
     public UserDTO getUserByEmail(String email) {

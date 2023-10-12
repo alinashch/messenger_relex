@@ -29,7 +29,7 @@ public class AuthService {
     private final UserService userService;
     private final VerificationService verificationService;
     private final EmailService emailService;
-    private final TokenService tokenService;
+    private final TokenUserService tokenService;
 
     private final AuthenticationManager authenticationManager;
 

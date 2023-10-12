@@ -46,7 +46,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                 .requestMatchers(POST, "/auth/resend-code").hasAnyAuthority(USER)
                 .requestMatchers(PUT, "/auth/profile/**").hasAnyAuthority(USER)
                 .requestMatchers(DELETE, "/auth/*").hasAnyAuthority(USER)
-                .anyRequest().authenticated();
+                .anyRequest().permitAll();
 
         http.addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new CookieAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID> {
+public interface RefreshUserTokenRepository extends JpaRepository<RefreshToken, UUID> {
 
 
     @Modifying
