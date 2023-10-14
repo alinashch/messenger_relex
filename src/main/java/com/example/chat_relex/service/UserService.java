@@ -96,6 +96,10 @@ public class UserService {
     }
     @Transactional
     public CredentialsDTO getCredentials(UserDTO user) {
+        if(!user.getIsVerified()){
+            throw new EmailNotVerification("The email is not verification ");
+
+        }
         if(refreshTokenRepository.getAllByUser_UserId(user.getUserId())==0){
             throw new TokenExpiredException("The token is not valid\n ");
         }

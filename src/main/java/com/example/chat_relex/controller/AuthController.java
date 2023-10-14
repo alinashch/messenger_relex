@@ -1,5 +1,6 @@
 package com.example.chat_relex.controller;
 
+import com.example.chat_relex.exceptions.EmailNotVerification;
 import com.example.chat_relex.models.Request.*;
 import com.example.chat_relex.models.dto.CredentialsDTO;
 import com.example.chat_relex.models.dto.ExceptionDTO;
@@ -44,6 +45,9 @@ public class AuthController {
             }),
             @ApiResponse(responseCode = "403", description = "Нет доступа", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
+            }),
+            @ApiResponse(responseCode = "411", description = "Не подтверждена почта", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = EmailNotVerification.class))
             })
     })
     public ResponseEntity<?> getCredentials(Authentication authentication) {
