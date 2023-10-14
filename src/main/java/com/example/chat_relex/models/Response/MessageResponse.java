@@ -16,5 +16,6 @@ public class MessageResponse {
 
     private String sender;
 
-    private String room;
+    private Long chatRoom;
+
 }

@@ -17,5 +17,4 @@ public class MessageDTO {
 
     private String sender;
 
-    private String room;
 }

@@ -25,5 +25,5 @@ public class Message {
     private String sender;
 
     @Column(nullable = false)
-    private String room;
+    private Long chatRoom;
 }

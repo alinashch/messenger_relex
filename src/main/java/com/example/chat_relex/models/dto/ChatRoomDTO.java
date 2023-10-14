@@ -1,7 +1,11 @@
 package com.example.chat_relex.models.dto;
 
+import com.example.chat_relex.models.entity.User;
+import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Instant;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -10,9 +14,9 @@ import java.util.UUID;
 @Getter
 @Setter
 public class ChatRoomDTO {
-    private Long charRoomId;
 
-    private UUID token;
+    private Long chatRoomId;
 
-    private int usersCount;
+    private Set<User> users;
+
 }

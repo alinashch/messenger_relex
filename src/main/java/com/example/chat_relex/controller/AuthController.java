@@ -46,8 +46,8 @@ public class AuthController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
             })
     })
-    public ResponseEntity<?> getCredentials(Principal principal) {
-        UserDTO user = userService.getUserByLogin(principal.getName());
+    public ResponseEntity<?> getCredentials(Authentication authentication) {
+        UserDTO user = userService.getUserByLogin((String) authentication.getPrincipal());
         return ResponseBuilder.build(OK, userService.getCredentials(user));
     }
 
@@ -108,8 +108,8 @@ public class AuthController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
             })
     })
-    public ResponseEntity<?> resendCode(Principal principal) {
-        UserDTO user = userService.getUserByEmail(principal.getName());
+    public ResponseEntity<?> resendCode(Authentication authentication) {
+        UserDTO user = userService.getUserByEmail((String) authentication.getPrincipal());
         authService.resendCode(user);
         return ResponseBuilder.buildWithoutBodyResponse(OK);
     }
@@ -167,9 +167,10 @@ public class AuthController {
                             schema = @Schema(implementation = ExceptionDTO.class))
                     })
     })
+    @SecurityRequirements
     public ResponseEntity<?> updateProfileInformation(@RequestBody @Valid UpdateProfileRequest request,
-                                                      Principal principal) {
-        UserDTO user = userService.getUserByLogin(principal.getName());
+                                                      Authentication authentication) {
+        UserDTO user = userService.getUserByLogin((String) authentication.getPrincipal());
         userService.updateProfile(user, request);
         return ResponseBuilder.buildWithoutBodyResponse(OK);
     }
@@ -186,9 +187,10 @@ public class AuthController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
             })
     })
+    @SecurityRequirements
     public ResponseEntity<?> updateProfilePassword(@RequestBody @Valid UpdateProfilePassword request,
-                                                   Principal principal) {
-        UserDTO user = userService.getUserByLogin(principal.getName());
+                                                   Authentication authentication) {
+        UserDTO user = userService.getUserByLogin((String) authentication.getPrincipal());
         userService.updatePassword(user, request);
         return ResponseBuilder.buildWithoutBodyResponse(OK);
     }
@@ -208,8 +210,9 @@ public class AuthController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
             })
     })
-    public ResponseEntity<?> deleteUser( Principal principal) {
-        UserDTO user = userService.getUserByLogin(principal.getName());
+    @SecurityRequirements
+    public ResponseEntity<?> deleteUser( Authentication authentication) {
+        UserDTO user = userService.getUserByLogin((String) authentication.getPrincipal());
         userService.deleteUser(user.getUserId());
         return ResponseBuilder.buildWithoutBodyResponse(NO_CONTENT);
     }
@@ -225,8 +228,9 @@ public class AuthController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
             })
     })
-    public ResponseEntity<?> signOut(Principal principal) {
-        userService.deleteSession(principal.getName());
+    @SecurityRequirements
+    public ResponseEntity<?> signOut(Authentication authentication) {
+        userService.deleteSession((String) authentication.getPrincipal());
         SecurityContextHolder.clearContext();
         return ResponseBuilder.buildWithoutBodyResponse(NO_CONTENT);
     }

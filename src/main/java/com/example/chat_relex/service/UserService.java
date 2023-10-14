@@ -47,9 +47,17 @@ public class UserService {
         return userMapper.toDTOFromEntity(user);
     }
 
-    public UserDTO getUserByLogin(String nickname) {
+    public UserDTO getUserByNickName(String nickname) {
 
-        User user = userRepository.getByLogin(nickname).orElseThrow(
+        User user = userRepository.getByNickname(nickname).orElseThrow(
+                () -> new EntityDoesNotExistException("Пользователь с данным логином не существует")
+        );
+        return userMapper.toDTOFromEntity(user);
+    }
+
+    public UserDTO getUserByLogin(String login) {
+
+        User user = userRepository.getByLogin(login).orElseThrow(
                 () -> new EntityDoesNotExistException("Пользователь с данным логином не существует")
         );
         return userMapper.toDTOFromEntity(user);
@@ -71,11 +79,13 @@ public class UserService {
         if (userRepository.existsByLogin(request.getLogin())) {
             throw new EntityAlreadyExistsException("Пользователь с данным логином уже существует");
         }
+        if (userRepository.existsByNickname(request.getNickname())) {
+            throw new EntityAlreadyExistsException("Пользователь с данным ником уже существует");
+        }
         if (!request.getPassword().equals(request.getRepeatPassword())) {
             throw new PasswordDoesNotMatchException("Пароли не совпадают");
         }
-        User user = userMapper.toEntityFromRequest(
-                request, Set.of(roleService.getUserRole()), BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
+        User user = userMapper.toEntityFromRequest(request, Set.of(roleService.getUserRole()), BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
 
         user = userRepository.save(user);
         return userMapper.toDTOFromEntity(user);

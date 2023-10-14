@@ -44,7 +44,7 @@ public class AuthService {
     @Transactional
     public TokensDTO signUp(SignUpForm request) {
         UserDTO registeredUser = userService.registerUser(request);
-        UUID code = verificationService.createCodeAndSave(registeredUser);
+       // UUID code = verificationService.createCodeAndSave(registeredUser);
         //sendCode(registeredUser, code);
         return tokenService.createTokens(registeredUser);
     }

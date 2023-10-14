@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
+import java.util.Set;
 import java.util.UUID;
 
 @Table(name = "chat_room")
@@ -17,12 +19,12 @@ import java.util.UUID;
 public class ChatRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long charRoomId;
+    private Long chatRoomId;
 
-    @Column(nullable = false)
-    private UUID token;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_chat_room",
+            joinColumns = {@JoinColumn(name = "chat_room_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")})
+    private Set<User> users;
 }

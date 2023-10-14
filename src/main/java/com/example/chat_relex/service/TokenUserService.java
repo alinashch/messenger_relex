@@ -14,7 +14,6 @@ import com.example.chat_relex.models.entity.RefreshToken;
 import com.example.chat_relex.repository.RefreshUserTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,12 +21,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-
-
-
-
-
 
 import java.time.Instant;
 import java.util.Date;
@@ -67,7 +60,7 @@ public class TokenUserService {
         setAuthToken(userDetails);
     }
 
-    public DecodedJWT decodeJWT(String authHeader) {
+    private DecodedJWT decodeJWT(String authHeader) {
         String token = authHeader;
         if (authHeader.startsWith(TOKEN_PREFIX)) {
             token = authHeader.substring(TOKEN_PREFIX.length());
@@ -118,7 +111,6 @@ public class TokenUserService {
                 )
                 .withClaim(EMAIL_CLAIM, user.getEmail())
                 .withClaim(LOGIN_CLAIM, user.getLogin())
-
                 .withClaim(NICKNAME_CLAIM, user.getNickname())
                 .withClaim(FULL_NAME_CLAIM, user.getFirstName().concat(" ").concat(user.getLastName()))
                 .sign(getAlgorithm());

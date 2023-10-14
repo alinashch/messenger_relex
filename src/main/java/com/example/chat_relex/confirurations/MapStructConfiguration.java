@@ -1,9 +1,6 @@
 package com.example.chat_relex.confirurations;
 
-import com.example.chat_relex.mapper.MessageMapper;
-import com.example.chat_relex.mapper.RoleMapper;
-import com.example.chat_relex.mapper.UserMapper;
-import com.example.chat_relex.mapper.VerificationMapper;
+import com.example.chat_relex.mapper.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -29,4 +26,8 @@ public class MapStructConfiguration {
     public MessageMapper messageMapper() {
         return MessageMapper.INSTANCE;
     }
+
+    @Bean
+    public ChatRoomMapper chatRoomMapper() {
+        return ChatRoomMapper.INSTANCE;}
 }

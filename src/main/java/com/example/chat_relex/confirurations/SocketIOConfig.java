@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SocketIOConfig {
 
-    private String host="192.168.94.65";
+    private String host="0.0.0.0";
 
     private Integer port=3000;
 
