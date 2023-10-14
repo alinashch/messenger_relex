@@ -41,4 +41,5 @@ public class ChatRoomService {
         chatRoomRepository.save(chatRoom);
         return chatRoomMapper.toResponseFromEntity(chatRoom);
     }
+
 }

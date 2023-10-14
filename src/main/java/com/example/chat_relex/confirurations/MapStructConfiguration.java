@@ -17,10 +17,6 @@ public class MapStructConfiguration {
         return RoleMapper.INSTANCE;
     }
 
-    @Bean
-    public VerificationMapper verificationMapper() {
-        return VerificationMapper.INSTANCE;
-    }
 
     @Bean
     public MessageMapper messageMapper() {
@@ -30,4 +26,10 @@ public class MapStructConfiguration {
     @Bean
     public ChatRoomMapper chatRoomMapper() {
         return ChatRoomMapper.INSTANCE;}
+
+    @Bean
+    public VerificationMapper verificationMapper() {
+        return VerificationMapper.INSTANCE;
+    }
+
 }

@@ -1,6 +1,7 @@
-package com.example.chat_relex.Template;
+package com.example.chat_relex.template;
 
-import com.samskivert.mustache.Mustache;
+
+import com.samskivert.mustache.Mustache.Compiler;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class MustacheTemplateEngine implements TemplateEngine {
 
-    private final Mustache.Compiler engine;
+    private final Compiler engine;
 
     @Override
     public String compile(String template, Object model) {

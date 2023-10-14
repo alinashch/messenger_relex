@@ -1,11 +1,11 @@
 package com.example.chat_relex.mapper;
 
-import com.example.chat_relex.models.Response.UserResponse;
+
 import com.example.chat_relex.models.dto.UserDTO;
-import com.example.chat_relex.models.entity.User;
 import com.example.chat_relex.models.entity.Verification;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+
 
 import java.time.Instant;
 import java.util.UUID;

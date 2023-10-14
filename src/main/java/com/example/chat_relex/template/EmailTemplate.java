@@ -1,4 +1,4 @@
-package com.example.chat_relex.Template;
+package com.example.chat_relex.template;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

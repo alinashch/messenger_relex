@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 public class UserDetailsServiceConfiguration {
 
     private final UserService userService;
-
     @Bean
     public UserDetailsService userDetailsService() {
         return userService::getUserByEmail;

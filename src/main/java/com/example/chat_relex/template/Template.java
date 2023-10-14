@@ -1,4 +1,4 @@
-package com.example.chat_relex.Template;
+package com.example.chat_relex.template;
 
 public interface Template {
 

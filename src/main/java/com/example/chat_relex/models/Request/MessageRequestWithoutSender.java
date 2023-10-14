@@ -1,7 +1,5 @@
 package com.example.chat_relex.models.Request;
 
-
-import com.example.chat_relex.models.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,10 +9,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class MessageRequest {
+public class MessageRequestWithoutSender {
 
     private String message;
-
-    private UserRequest userSender;
 
 }

@@ -28,18 +28,13 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration implements WebMvcConfigurer {
-
     private final static String USER = "USER";
-
     private final AuthorizationFilter authorizationFilter;
     private final AuthenticationProvider authenticationProvider;
-
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable();
-
         http.authorizeHttpRequests()
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers(GET, "/auth/credentials").hasAnyAuthority(USER)

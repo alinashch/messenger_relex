@@ -19,8 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User save(User userEntity);
 
-    void deleteById(long id);
-
     boolean existsByEmail(String email);
 
     boolean existsByLogin(String login);
@@ -36,16 +34,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> getByEmail(String email);
 
     @Modifying
-    @Query(value = "UPDATE user_info  SET is_Verified = true WHERE user_id  = :id",  nativeQuery = true)
-    void verifyUserById(@Param("id") Long id);
-
-    @Modifying
     @Query(value = "DELETE FROM refresh_token WHERE user_id = :userId ", nativeQuery = true)
     void deleteToken(@Param("userId") Long id);
 
     @Modifying
-    @Query(value = "DELETE FROM verification WHERE user_id = :userId ", nativeQuery = true)
-    void deleteVerification(@Param("userId") Long id);
-
+    @Query(value ="UPDATE user_info  SET is_verified = true WHERE user_id = :id", nativeQuery = true)
+    void verifyUserById(@Param("id") Long id);
 
 }

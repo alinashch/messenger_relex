@@ -1,18 +1,24 @@
 package com.example.chat_relex.service;
 
-import com.example.chat_relex.Template.Template;
-import com.example.chat_relex.Template.TemplateEngine;
-import lombok.RequiredArgsConstructor;
+
+import com.example.chat_relex.template.Template;
+import com.example.chat_relex.template.TemplateEngine;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mail.MailProperties;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 
-@Service
-@RequiredArgsConstructor
-public class EmailService {
+import java.io.File;
 
+@Service
+@AllArgsConstructor
+
+public class EmailSenderService {
     private final JavaMailSender sender;
     private final MailProperties mailProperties;
     private final TemplateEngine templateEngine;

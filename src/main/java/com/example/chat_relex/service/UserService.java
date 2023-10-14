@@ -50,7 +50,7 @@ public class UserService {
     public UserDTO getUserByNickName(String nickname) {
 
         User user = userRepository.getByNickname(nickname).orElseThrow(
-                () -> new EntityDoesNotExistException("Пользователь с данным логином не существует")
+                () -> new EntityDoesNotExistException("Пользователь с данным ником не существует")
         );
         return userMapper.toDTOFromEntity(user);
     }
@@ -90,16 +90,10 @@ public class UserService {
         user = userRepository.save(user);
         return userMapper.toDTOFromEntity(user);
     }
-
     @Transactional
     public void verifyUserById(Long id) {
         userRepository.verifyUserById(id);
     }
-
-    public boolean isAdmin(UserDTO user) {
-        return roleService.isAdmin(user.getRoles());
-    }
-
     @Transactional
     public CredentialsDTO getCredentials(UserDTO user) {
         if(refreshTokenRepository.getAllByUser_UserId(user.getUserId())==0){
@@ -142,7 +136,6 @@ public class UserService {
             throw new TokenExpiredException("The token is not valid\n");
         }
         userRepository.deleteToken(userId);
-        userRepository.deleteVerification(userId);
         userRepository.delete(userRepository.findById(userId).orElseThrow(
                 () -> new EntityDoesNotExistException("Пользователь с данным ИД не существует")
         ));

@@ -14,8 +14,8 @@ public class MessageResponse {
 
     private String message;
 
-    private String sender;
+    private User userSender;
 
-    private Long chatRoom;
+    private ChatRoom chatRoom;
 
 }

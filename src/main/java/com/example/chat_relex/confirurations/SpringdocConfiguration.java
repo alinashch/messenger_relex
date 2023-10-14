@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 @SecurityScheme(name = "bearerAuth", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "bearer")
 @OpenAPIDefinition(
         info = @Info(
-                title = "relex messager",
+                title = "relex messanger",
                 description = "Описание всех эндпоинтов сервиса ",
                 contact = @Contact(name = "Алина Щербинина", email = "alina280702@mail.ru"),
                 version = "1.0.11"),

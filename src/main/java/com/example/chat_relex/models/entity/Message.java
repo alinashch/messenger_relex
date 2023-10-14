@@ -21,9 +21,12 @@ public class Message {
     @Column(nullable = false)
     private String message;
 
-    @Column(nullable = false)
-    private String sender;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User userSender;
 
-    @Column(nullable = false)
-    private Long chatRoom;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "chat_room_id")
+    private ChatRoom chatRoom;
+
 }

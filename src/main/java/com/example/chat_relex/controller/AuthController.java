@@ -71,6 +71,7 @@ public class AuthController {
         return ResponseBuilder.build(OK, authService.signUp(request));
     }
 
+
     @PostMapping("/verify/{code}")
     @Operation(summary = "Верификация пользователя", tags = AUTH, responses = {
             @ApiResponse(responseCode = "200", description = "Пользователь верифицирован", content = {

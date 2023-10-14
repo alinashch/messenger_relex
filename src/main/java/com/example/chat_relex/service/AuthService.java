@@ -1,6 +1,5 @@
 package com.example.chat_relex.service;
 
-import com.example.chat_relex.Template.EmailTemplate;
 import com.example.chat_relex.exceptions.WrongCredentialsException;
 import com.example.chat_relex.exceptions.WrongInputLoginException;
 import com.example.chat_relex.models.Request.LoginForm;
@@ -8,18 +7,19 @@ import com.example.chat_relex.models.Request.SignUpForm;
 import com.example.chat_relex.models.dto.TokensDTO;
 import com.example.chat_relex.models.dto.UserDTO;
 import com.example.chat_relex.models.dto.VerificationEmailDTO;
+import com.example.chat_relex.template.EmailTemplate;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -27,41 +27,39 @@ import java.util.UUID;
 public class AuthService {
 
     private final UserService userService;
-    private final VerificationService verificationService;
-    private final EmailService emailService;
     private final TokenUserService tokenService;
 
     private final AuthenticationManager authenticationManager;
-
+    private final VerificationService verificationService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Value("${emailTemplate.mainPage}")
-    private String mainPage;
+    private final EmailSenderService senderService;
+
 
     @Value("${emailTemplate.verificationLink}")
     private String verificationLink;
 
+
     @Transactional
     public TokensDTO signUp(SignUpForm request) {
         UserDTO registeredUser = userService.registerUser(request);
-       // UUID code = verificationService.createCodeAndSave(registeredUser);
-        //sendCode(registeredUser, code);
+        UUID code = verificationService.createCodeAndSave(registeredUser);
+        sendCode(registeredUser, code);
         return tokenService.createTokens(registeredUser);
     }
 
+
     @Async
     void sendCode(UserDTO user, UUID code) {
-        emailService.sendTemplate(
+        senderService.sendTemplate(
                 user.getEmail(),
-                "Подтверждение регистрации в чате relex",
+                "Подтверждение регистрации  в мессенджере Relex",
                 EmailTemplate.VERIFICATION_USER,
                 new VerificationEmailDTO(
                         user.getFirstName() + " " + user.getLastName(),
-                        mainPage,
                         verificationLink + "/" + code.toString()
                 ));
     }
-
     @Transactional
     public void resendCode(UserDTO user) {
         UUID code = verificationService.resendCode(user);
@@ -73,7 +71,6 @@ public class AuthService {
         Long userId = verificationService.getVerificationUserId(code);
         userService.verifyUserById(userId);
     }
-
     @Transactional
     public TokensDTO login(LoginForm request) {
         if(userService.getUserByLogin(request.getLogin())==null){

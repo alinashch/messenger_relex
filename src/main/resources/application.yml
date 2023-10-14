@@ -1,4 +1,3 @@
-
 spring:
   jpa:
     database: POSTGRESQL
@@ -10,22 +9,23 @@ spring:
     username: postgres
     password: 1234
     driverClassName: org.postgresql.Driver
-
   sql:
     init:
       platform: postgres
 
   mail:
     host: smtp.gmail.com
-    port: 587
-    username: example@gmail.com
-    password: examplepassword
+    port: 465
+    username: alina.scsh.28072002@gmail.com
+    password: btcivtcceuamqufw
     properties:
       mail:
         smtp:
           auth: true
           starttls.enable: true
           ssl.enable: true
+emailTemplate:
+  verificationLink: http://localhost:8080/auth/verify
 
 springdoc:
   api-docs:
@@ -34,6 +34,3 @@ springdoc:
     url: /openapi.yaml
     path: /swagger-ui.html
 
-emailTemplate:
-  mainPage: https://www.musicman-vsu.online
-  verificationLink: https://www.musicman-vsu.online/auth/verify
