@@ -14,8 +14,6 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 public class UpdateEmailInfoForm {
-    @NotBlank
-    private Long id;
 
     @NotBlank
     @Size(max = 255)

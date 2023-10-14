@@ -3,6 +3,7 @@ package com.example.chat_relex.service;
 import com.example.chat_relex.exceptions.*;
 import com.example.chat_relex.mapper.UserMapper;
 import com.example.chat_relex.models.Request.SignUpForm;
+import com.example.chat_relex.models.Request.UpdateEmailInfoForm;
 import com.example.chat_relex.models.Request.UpdateProfilePassword;
 import com.example.chat_relex.models.Request.UpdateProfileRequest;
 import com.example.chat_relex.models.dto.CredentialsDTO;
@@ -32,6 +33,139 @@ public class UserService {
 
     private final RefreshUserTokenRepository refreshTokenRepository;
 
+    @Transactional
+    public UserDTO registerUser(SignUpForm request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new EntityAlreadyExistsException("Пользователь с данной почтой уже существует");
+        }
+        if (userRepository.existsByLogin(request.getLogin())) {
+            throw new EntityAlreadyExistsException("Пользователь с данным логином уже существует");
+        }
+        if (userRepository.existsByNickname(request.getNickname())) {
+            throw new EntityAlreadyExistsException("Пользователь с данным ником уже существует");
+        }
+        if (!request.getPassword().equals(request.getRepeatPassword())) {
+            throw new PasswordDoesNotMatchException("Пароли не совпадают");
+        }
+        User user = userMapper.toEntityFromRequest(request, Set.of(roleService.getUserRole()), BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
+
+        user = userRepository.save(user);
+        return userMapper.toDTOFromEntity(user);
+    }
+
+    @Transactional
+    public void verifyUserById(Long id) {
+        userRepository.verifyUserById(id);
+    }
+
+    @Transactional
+    public CredentialsDTO getCredentials(UserDTO user) {
+        if (!user.getIsVerified()) {
+            throw new EmailNotVerification("The email is not verification ");
+        }
+        if (refreshTokenRepository.getAllByUser_UserId(user.getUserId()) == 0) {
+            throw new TokenExpiredException("The token is not valid ");
+        }
+        if(!user.getIsActive()){
+            throw new NotActiveUser("The user is not active ");
+        }
+        return userMapper.toCredentialsDTOFromDTO(user);
+    }
+
+    @Transactional
+    public void updateProfile(UserDTO user, UpdateProfileRequest request) {
+        if (refreshTokenRepository.getAllByUser_UserId(user.getUserId()) == 0) {
+            throw new TokenExpiredException("The token is not valid\n");
+        }
+        if (userRepository.existsByLogin(request.getNickname())) {
+            throw new EntityAlreadyExistsException("Пользователь с данным никнеймом уже существует");
+        }
+        User entity = userMapper.toEntityFromDTO(user);
+        if (!entity.getIsVerified()) {
+            throw new EmailNotVerification("The email is not verification ");
+        }
+        if(!user.getIsActive()){
+            throw new NotActiveUser("The user is not active ");
+        }
+        userMapper.updateEntity(request, entity);
+        userRepository.save(entity);
+    }
+
+    @Transactional
+    public void updatePassword(UserDTO user, UpdateProfilePassword request) {
+        if (refreshTokenRepository.getAllByUser_UserId(user.getUserId()) == 0) {
+            throw new TokenExpiredException("The token is not valid");
+        }
+        if (!request.getPassword().equals(request.getRepeatPassword())) {
+            throw new PasswordDoesNotMatchException("Пароли не совпадают");
+        }
+        User entity = userMapper.toEntityFromDTO(user);
+        if (!entity.getIsVerified()) {
+            throw new EmailNotVerification("The email is not verification ");
+        }
+        if(!user.getIsActive()){
+            throw new NotActiveUser("The user is not active");
+        }
+        entity.setPasswordHash(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
+        userMapper.updateEntity(request, entity);
+        userRepository.save(entity);
+    }
+
+    @Transactional
+    public UserDTO updateEmail(UserDTO user, UpdateEmailInfoForm request) {
+        if (refreshTokenRepository.getAllByUser_UserId(user.getUserId()) == 0) {
+            throw new TokenExpiredException("The token is not valid");
+        }
+        User entity = userMapper.toEntityFromDTO(user);
+        if (userRepository.getByEmail(request.getEmail()).isPresent()) {
+            throw new EntityAlreadyExistsException("Пользователь с данной почтой уже существует");
+        }
+        if(!user.getIsActive()){
+            throw new NotActiveUser("The user is not active");
+        }
+        userMapper.updateEntity(request, entity);
+        return userMapper.toDTOFromEntity(userRepository.save(entity));
+    }
+
+    @Transactional
+    public void deleteUser(Long userId) {
+        if (refreshTokenRepository.getAllByUser_UserId(userId) == 0) {
+            throw new TokenExpiredException("The token is not valid");
+        }
+        User entity = userRepository.findById(userId).get();
+        if (!entity.getIsVerified()) {
+            throw new EmailNotVerification("The email is not verification ");
+        }
+        userRepository.deleteToken(userId);
+        userRepository.delete(userRepository.findById(userId).orElseThrow(
+                () -> new EntityDoesNotExistException("Пользователь с данным ИД не существует")
+        ));
+    }
+
+    @Transactional
+    public void setIsActive(Long userId) {
+        userRepository.setActive(userId);
+    }
+
+    @Transactional
+    public void setNotActive(Long userId) {
+        userRepository.setNotActive(userId);
+    }
+
+    @Transactional
+    public void deleteSession(String login) {
+        if (refreshTokenRepository.getAllByUser_UserId(userRepository.getByLogin(login).get().getUserId()) == 0) {
+            throw new TokenExpiredException("The token is not valid");
+        }
+        User entity = userRepository.getByLogin(login).get();
+        if(!entity.getIsActive()){
+            throw new NotActiveUser("The user is not active");
+        }
+        if (!entity.getIsVerified()) {
+            throw new EmailNotVerification("The email is not verification ");
+        }
+        userRepository.deleteToken(userRepository.getByLogin(login).get().getUserId());
+    }
 
     public UserDTO getUserByEmail(String email) {
         User user = userRepository.getByEmail(email).orElseThrow(
@@ -61,95 +195,6 @@ public class UserService {
                 () -> new EntityDoesNotExistException("Пользователь с данным логином не существует")
         );
         return userMapper.toDTOFromEntity(user);
-    }
-
-    public UserDTO getUserByEmailWithVerificationCheck(String email) {
-        UserDTO user = getUserByEmail(email);
-        if (!user.getIsVerified()) {
-            throw new UserNotVerifiedException("Пользователь не верифицирован");
-        }
-        return user;
-    }
-
-    @Transactional
-    public UserDTO registerUser(SignUpForm request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new EntityAlreadyExistsException("Пользователь с данной почтой уже существует");
-        }
-        if (userRepository.existsByLogin(request.getLogin())) {
-            throw new EntityAlreadyExistsException("Пользователь с данным логином уже существует");
-        }
-        if (userRepository.existsByNickname(request.getNickname())) {
-            throw new EntityAlreadyExistsException("Пользователь с данным ником уже существует");
-        }
-        if (!request.getPassword().equals(request.getRepeatPassword())) {
-            throw new PasswordDoesNotMatchException("Пароли не совпадают");
-        }
-        User user = userMapper.toEntityFromRequest(request, Set.of(roleService.getUserRole()), BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
-
-        user = userRepository.save(user);
-        return userMapper.toDTOFromEntity(user);
-    }
-    @Transactional
-    public void verifyUserById(Long id) {
-        userRepository.verifyUserById(id);
-    }
-    @Transactional
-    public CredentialsDTO getCredentials(UserDTO user) {
-        if(!user.getIsVerified()){
-            throw new EmailNotVerification("The email is not verification ");
-
-        }
-        if(refreshTokenRepository.getAllByUser_UserId(user.getUserId())==0){
-            throw new TokenExpiredException("The token is not valid\n ");
-        }
-        return userMapper.toCredentialsDTOFromDTO(user);
-    }
-
-    @Transactional
-    public void updateProfile(UserDTO user, UpdateProfileRequest request) {
-        if(refreshTokenRepository.getAllByUser_UserId(user.getUserId())==0){
-            throw new TokenExpiredException("The token is not valid\n");
-        }
-        if (userRepository.existsByLogin(request.getNickname())) {
-            throw new EntityAlreadyExistsException("Пользователь с данным никнеймом уже существует");
-        }
-        User entity = userMapper.toEntityFromDTO(user);
-        userMapper.updateEntity(request, entity);
-        userRepository.save(entity);
-    }
-
-    @Transactional
-    public void updatePassword(UserDTO user , UpdateProfilePassword request) {
-        if(refreshTokenRepository.getAllByUser_UserId(user.getUserId())==0){
-            throw new TokenExpiredException("The token is not valid\n");
-        }
-        if (!request.getPassword().equals(request.getRepeatPassword())) {
-            throw new PasswordDoesNotMatchException("Пароли не совпадают");
-        }
-        User entity = userMapper.toEntityFromDTO(user);
-        entity.setPasswordHash(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
-        System.out.println(entity.getEmail());
-        userMapper.updateEntity(request, entity);
-         userRepository.save(entity);
-    }
-
-    @Transactional
-    public void deleteUser(Long userId) {
-        if(refreshTokenRepository.getAllByUser_UserId(userId)==0){
-            throw new TokenExpiredException("The token is not valid\n");
-        }
-        userRepository.deleteToken(userId);
-        userRepository.delete(userRepository.findById(userId).orElseThrow(
-                () -> new EntityDoesNotExistException("Пользователь с данным ИД не существует")
-        ));
-    }
-    @Transactional
-    public void deleteSession(String  login) {
-        if(refreshTokenRepository.getAllByUser_UserId(userRepository.getByLogin(login).get().getUserId())==0){
-            throw new TokenExpiredException("The token is not valid\n");
-        }
-        userRepository.deleteToken(userRepository.getByLogin(login).get().getUserId());
     }
 
 

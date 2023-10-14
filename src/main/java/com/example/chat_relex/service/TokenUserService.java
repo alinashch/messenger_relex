@@ -32,7 +32,6 @@ import java.util.UUID;
 public class TokenUserService {
 
     public static final String TOKEN_PREFIX = "Bearer ";
-
     private static final String NICKNAME_CLAIM = "nickname";
     private static final String EXPIRATION_CLAIM = "exp";
     private static final String ROLES_CLAIM = "roles";

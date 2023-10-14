@@ -1,6 +1,8 @@
 package com.example.chat_relex.service;
 
 
+import com.example.chat_relex.exceptions.EmailNotVerification;
+import com.example.chat_relex.exceptions.NotActiveUser;
 import com.example.chat_relex.mapper.ChatRoomMapper;
 import com.example.chat_relex.mapper.UserMapper;
 import com.example.chat_relex.models.Request.ChatRoomRequest;
@@ -34,6 +36,12 @@ public class ChatRoomService {
 
     @Transactional
     public ChatroomResponse startNewChat(StartChatForm startChatForm, UserDTO sender){
+        if(!sender.getIsActive() || !userRepository.getByNickname(startChatForm.getRecipientNickname()).get().getIsActive()){
+            throw new NotActiveUser("The user is not active");
+        }
+        if(!sender.getIsVerified() || !userRepository.getByNickname(startChatForm.getRecipientNickname()).get().getIsVerified()){
+            throw new EmailNotVerification("The email is not verification ");
+        }
         Set<User> users=new HashSet<>();
         users.add(userRepository.getByNickname(startChatForm.getRecipientNickname()).get());
         users.add(userMapper.toEntityFromDTO(sender));

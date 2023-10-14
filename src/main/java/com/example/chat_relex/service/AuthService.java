@@ -1,9 +1,12 @@
 package com.example.chat_relex.service;
 
+import com.example.chat_relex.exceptions.NotActiveUser;
 import com.example.chat_relex.exceptions.WrongCredentialsException;
 import com.example.chat_relex.exceptions.WrongInputLoginException;
 import com.example.chat_relex.models.Request.LoginForm;
 import com.example.chat_relex.models.Request.SignUpForm;
+import com.example.chat_relex.models.Request.UpdateEmailInfoForm;
+import com.example.chat_relex.models.Request.UpdateProfileRequest;
 import com.example.chat_relex.models.dto.TokensDTO;
 import com.example.chat_relex.models.dto.UserDTO;
 import com.example.chat_relex.models.dto.VerificationEmailDTO;
@@ -48,6 +51,12 @@ public class AuthService {
         return tokenService.createTokens(registeredUser);
     }
 
+    @Transactional
+    public void resendCode(UpdateEmailInfoForm request, UserDTO user) {
+        UserDTO userDTO=userService.updateEmail(user, request);
+        UUID code = verificationService.createCodeAndSave(userDTO);
+        sendCode(userDTO, code);
+    }
 
     @Async
     void sendCode(UserDTO user, UUID code) {
@@ -62,6 +71,9 @@ public class AuthService {
     }
     @Transactional
     public void resendCode(UserDTO user) {
+        if(!user.getIsActive()){
+            throw new NotActiveUser("The user is not active");
+        }
         UUID code = verificationService.resendCode(user);
         sendCode(user, code);
     }

@@ -27,6 +27,9 @@ public class UserDTO implements UserDetails {
 
     private String nickname;
     private Boolean isVerified;
+
+    private Boolean isActive ;
+
     private Set<RoleDTO> roles;
 
     @Override
