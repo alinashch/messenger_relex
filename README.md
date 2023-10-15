@@ -42,7 +42,7 @@ https://drive.google.com/file/d/1HO80c64dAvmT1SgSjSx3a9_W809q_ikp/view?usp=shari
 ## Регистрация нового пользователя
 - POST запрос по адресу http://localhost:8080/auth/register
 > Примеры запросов 
- 1.  request body:
+ 1. - request body:
  `{
    "nickname":"alina_shch",
    "login":"alina-alina",
@@ -52,7 +52,7 @@ https://drive.google.com/file/d/1HO80c64dAvmT1SgSjSx3a9_W809q_ikp/view?usp=shari
     "firstName":"Алина",
     "lastName":"Щербинина"
 }`
-response (status: 200 OK) :
+-response (status: 200 OK) :
 `{
     "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxNyIsImV4cCI6MTY5NzQwMzYwMSwicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.d_ID9UpGlNRjzN4qq5XrMvlxfz-F0aiiB0p1JEqHKmw",
     "refreshToken": "ddff5d25-2ce8-4534-a91b-e45f166a6ccb"
