@@ -41,7 +41,9 @@ public class SocketService {
             if (!client.getSessionId().equals(senderClient.getSessionId())) {
                 ChatRoom chatRoom = chatRoomRepository.findById(Long.valueOf(chatRoomId)).get();
                 User sender = userMapper.toEntityFromDTO(userService.getUserByNickName(senderNickName));
+                System.out.println(sender.getNickname());
                 MessageResponse messageResponse = new MessageResponse(message, sender, chatRoom);
+
                 messageRepository.save(messageMapper.toEntityFromResponse(messageResponse));
                 UserRequest userRequest = userMapper.toRequestFromEntity(sender);
                 client.sendEvent(eventName, new MessageRequest(message, userRequest));

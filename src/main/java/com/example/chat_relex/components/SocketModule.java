@@ -49,7 +49,6 @@ public class SocketModule {
             client.joinRoom(room);
             List<Message> messages = socketService.getMessageHistory(client.getHandshakeData().getSingleUrlParam("chatRoomId"));
             for (Message m : messages) {
-                System.out.println(m);
                 if (m.getUserSender().getNickname().equals(client.getHandshakeData().getSingleUrlParam("senderNickname"))) {
                     System.out.println(true);
                     socketService.sendMessageHistory(client.getHandshakeData().getSingleUrlParam("chatRoomId"), "send_message", client, m.getMessage(), client.getHandshakeData().getSingleUrlParam("senderNickname"));
