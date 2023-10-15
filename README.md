@@ -29,5 +29,16 @@ https://drive.google.com/file/d/1uRV7A9AAzgnqZMpRyb_x5eytgjV7gltW/view?usp=shari
 - использование базы данных PostgreSQL
 - документирование запросов через Swagger
 
+# Swagger
+Для просмотра swagger перейдите по ссылке: 
+
+# Настройка для запуска
+Для того чтобы сервис раотал корректно, необходимо в таблицу role внести следующие зависимости:
+![Alt text](image.png)
+
+# Запросы 
+
+
+
 
 
