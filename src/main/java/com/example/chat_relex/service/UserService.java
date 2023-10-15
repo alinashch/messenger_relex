@@ -34,13 +34,13 @@ public class UserService {
 
     @Transactional
     public UserDTO registerUser(SignUpForm request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
+        if (userRepository.getByEmail(request.getEmail()).isPresent()) {
             throw new EntityAlreadyExistsException("User with this email already exists");
         }
         if (userRepository.existsByLogin(request.getLogin())) {
             throw new EntityAlreadyExistsException("User with this login already exists");
         }
-        if (userRepository.existsByNickname(request.getNickname())) {
+        if (userRepository.getByNickname(request.getNickname()).isPresent()) {
             throw new EntityAlreadyExistsException("User with this nickname already exists");
         }
         if (!request.getPassword().equals(request.getRepeatPassword())) {

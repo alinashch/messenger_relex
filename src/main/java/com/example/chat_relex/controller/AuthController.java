@@ -50,6 +50,7 @@ public class AuthController {
                     content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
                     })
+
     })
     @SecurityRequirements
     public ResponseEntity<?> signUpNewUserUsingForm(@RequestBody @Valid SignUpForm request) {
