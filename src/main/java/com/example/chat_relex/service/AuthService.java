@@ -1,5 +1,6 @@
 package com.example.chat_relex.service;
 
+import com.example.chat_relex.exceptions.TokenExpiredException;
 import com.example.chat_relex.exceptions.WrongCredentialsException;
 import com.example.chat_relex.exceptions.WrongInputLoginException;
 import com.example.chat_relex.models.Request.LoginForm;
@@ -8,12 +9,8 @@ import com.example.chat_relex.models.dto.TokensDTO;
 import com.example.chat_relex.models.dto.UserDTO;
 import com.example.chat_relex.models.dto.VerificationEmailDTO;
 import com.example.chat_relex.template.EmailTemplate;
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
@@ -77,6 +74,10 @@ public class AuthService {
             throw new WrongCredentialsException("Неправильный логин ");
         }
         UserDTO user = userService.getUserByLogin(request.getLogin());
+        if(!user.getIsVerified()){
+            throw new TokenExpiredException("Email not verification ");
+
+        }
         if (!bCryptPasswordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             throw new WrongInputLoginException("Неправильный пароль");
         }

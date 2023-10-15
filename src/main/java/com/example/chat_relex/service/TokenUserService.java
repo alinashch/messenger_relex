@@ -132,8 +132,12 @@ public class TokenUserService {
     public TokensDTO refreshAccessToken(RefreshTokenRequest request) {
         RefreshToken refreshToken = findRefreshTokenById(request.getRefreshToken());
         checkIfTokenIsExpired(refreshToken.getValidTill());
+        UserDTO userDTO=userService.getUserByEmail(refreshToken.getUser().getEmail());
+        if(!userDTO.getIsVerified()){
+
+        }
         return new TokensDTO(
-                generateAccessToken(userService.getUserByEmail(refreshToken.getUser().getEmail())),
+                generateAccessToken(userDTO),
                 refreshToken.getToken().toString()
         );
     }

@@ -99,6 +99,9 @@ public class UserService {
         if(refreshTokenRepository.getAllByUser_UserId(user.getUserId())==0){
             throw new TokenExpiredException("The token is not valid\n ");
         }
+        if(!user.getIsVerified()){
+            throw new TokenExpiredException("Email not verification ");
+        }
         return userMapper.toCredentialsDTOFromDTO(user);
     }
 
@@ -109,6 +112,9 @@ public class UserService {
         }
         if (userRepository.existsByLogin(request.getNickname())) {
             throw new EntityAlreadyExistsException("Пользователь с данным никнеймом уже существует");
+        }
+        if(!user.getIsVerified()){
+            throw new TokenExpiredException("Email not verification ");
         }
         User entity = userMapper.toEntityFromDTO(user);
         userMapper.updateEntity(request, entity);
@@ -123,6 +129,9 @@ public class UserService {
         if (!request.getPassword().equals(request.getRepeatPassword())) {
             throw new PasswordDoesNotMatchException("Пароли не совпадают");
         }
+        if(!user.getIsVerified()){
+            throw new TokenExpiredException("Email not verification ");
+        }
         User entity = userMapper.toEntityFromDTO(user);
         entity.setPasswordHash(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
         System.out.println(entity.getEmail());
@@ -135,6 +144,10 @@ public class UserService {
         if(refreshTokenRepository.getAllByUser_UserId(userId)==0){
             throw new TokenExpiredException("The token is not valid\n");
         }
+        UserDTO user=userMapper.toDTOFromEntity(userRepository.findById(userId).get());
+        if(!user.getIsVerified()){
+            throw new TokenExpiredException("Email not verification ");
+        }
         userRepository.deleteToken(userId);
         userRepository.delete(userRepository.findById(userId).orElseThrow(
                 () -> new EntityDoesNotExistException("Пользователь с данным ИД не существует")
@@ -142,8 +155,12 @@ public class UserService {
     }
     @Transactional
     public void deleteSession(String  login) {
-        if(refreshTokenRepository.getAllByUser_UserId(userRepository.getByLogin(login).get().getUserId())==0){
+        UserDTO user=userMapper.toDTOFromEntity(userRepository.getByLogin(login).get());
+        if(refreshTokenRepository.getAllByUser_UserId(user.getUserId())==0){
             throw new TokenExpiredException("The token is not valid\n");
+        }
+        if(!user.getIsVerified()){
+            throw new TokenExpiredException("Email not verification ");
         }
         userRepository.deleteToken(userRepository.getByLogin(login).get().getUserId());
     }

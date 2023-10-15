@@ -1,5 +1,6 @@
 package com.example.chat_relex.controller;
 
+import com.example.chat_relex.exceptions.EmailNotVerification;
 import com.example.chat_relex.models.Request.*;
 import com.example.chat_relex.models.dto.CredentialsDTO;
 import com.example.chat_relex.models.dto.ExceptionDTO;
@@ -34,17 +35,22 @@ public class AuthController {
     private final TokenUserService tokenService;
     private final UserService userService;
 
-    @GetMapping("/credentials")
+    @GetMapping("/user-info")
     @Operation(summary = "Получение информации о пользователе", tags = AUTH, responses = {
-            @ApiResponse(responseCode = "200", description = "Получение кредов", content = {
+            @ApiResponse(responseCode = "200", description = "Получение информации", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = CredentialsDTO.class))
             }),
             @ApiResponse(responseCode = "400", description = "Невалидные входные данные", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
             }),
-            @ApiResponse(responseCode = "403", description = "Нет доступа", content = {
+
+            @ApiResponse(responseCode = "404", description = "Нет доступа", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
+            }),
+            @ApiResponse(responseCode = "410", description = "Не подтверждена почта", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = EmailNotVerification.class))
             })
+
     })
     public ResponseEntity<?> getCredentials(Authentication authentication) {
         UserDTO user = userService.getUserByLogin((String) authentication.getPrincipal());
@@ -123,6 +129,9 @@ public class AuthController {
             }),
             @ApiResponse(responseCode = "400", description = "Неправильный пароль или логин", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
+            }),
+            @ApiResponse(responseCode = "410", description = "Не подтверждена почта", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = EmailNotVerification.class))
             })
     })
     @SecurityRequirements
@@ -142,9 +151,14 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "Токен не валиден", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
             }),
+
             @ApiResponse(responseCode = "404", description = "Токен не существует", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
+            }),
+            @ApiResponse(responseCode = "410", description = "Не подтверждена почта", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = EmailNotVerification.class))
             })
+
     })
     @SecurityRequirements
     public ResponseEntity<?> refreshToken(@RequestBody @Valid RefreshTokenRequest request) {
@@ -166,7 +180,10 @@ public class AuthController {
                     description = "Пользователь c указанным ником уже существует",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = ExceptionDTO.class))
-                    })
+                    }),
+            @ApiResponse(responseCode = "410", description = "Не подтверждена почта", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = EmailNotVerification.class))
+            }),
     })
     @SecurityRequirements
     public ResponseEntity<?> updateProfileInformation(@RequestBody @Valid UpdateProfileRequest request,
@@ -186,7 +203,10 @@ public class AuthController {
             }),
             @ApiResponse(responseCode = "403", description = "Нет доступа", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
-            })
+            }),
+            @ApiResponse(responseCode = "410", description = "Не подтверждена почта", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = EmailNotVerification.class))
+            }),
     })
     @SecurityRequirements
     public ResponseEntity<?> updateProfilePassword(@RequestBody @Valid UpdateProfilePassword request,
@@ -209,7 +229,10 @@ public class AuthController {
             }),
             @ApiResponse(responseCode = "404", description = "Пользователя не существует", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
-            })
+            }),
+            @ApiResponse(responseCode = "410", description = "Не подтверждена почта", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = EmailNotVerification.class))
+            }),
     })
     @SecurityRequirements
     public ResponseEntity<?> deleteUser( Authentication authentication) {
@@ -227,7 +250,10 @@ public class AuthController {
             }),
             @ApiResponse(responseCode = "403", description = "Нет доступа", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
-            })
+            }),
+            @ApiResponse(responseCode = "410", description = "Не подтверждена почта", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = EmailNotVerification.class))
+            }),
     })
     @SecurityRequirements
     public ResponseEntity<?> signOut(Authentication authentication) {
