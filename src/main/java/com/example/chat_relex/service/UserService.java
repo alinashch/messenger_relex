@@ -13,7 +13,6 @@ import com.example.chat_relex.repository.RefreshUserTokenRepository;
 import com.example.chat_relex.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,16 +35,16 @@ public class UserService {
     @Transactional
     public UserDTO registerUser(SignUpForm request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new EntityAlreadyExistsException("Пользователь с данной почтой уже существует");
+            throw new EntityAlreadyExistsException("User with this email already exists");
         }
         if (userRepository.existsByLogin(request.getLogin())) {
-            throw new EntityAlreadyExistsException("Пользователь с данным логином уже существует");
+            throw new EntityAlreadyExistsException("User with this login already exists");
         }
         if (userRepository.existsByNickname(request.getNickname())) {
-            throw new EntityAlreadyExistsException("Пользователь с данным ником уже существует");
+            throw new EntityAlreadyExistsException("User with this nickname already exists");
         }
         if (!request.getPassword().equals(request.getRepeatPassword())) {
-            throw new PasswordDoesNotMatchException("Пароли не совпадают");
+            throw new PasswordDoesNotMatchException("Password does not match");
         }
         User user = userMapper.toEntityFromRequest(request, Set.of(roleService.getUserRole()), BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
 
@@ -67,7 +66,7 @@ public class UserService {
             throw new TokenExpiredException("The token is not valid ");
         }
         if(!user.getIsActive()){
-            throw new NotActiveUser("The user is not active ");
+            throw new NotActiveUserException("The user is not active ");
         }
         return userMapper.toCredentialsDTOFromDTO(user);
     }
@@ -75,17 +74,17 @@ public class UserService {
     @Transactional
     public void updateProfile(UserDTO user, UpdateProfileRequest request) {
         if (refreshTokenRepository.getAllByUser_UserId(user.getUserId()) == 0) {
-            throw new TokenExpiredException("The token is not valid\n");
+            throw new TokenExpiredException("The token is not valid");
         }
         if (userRepository.existsByLogin(request.getNickname())) {
-            throw new EntityAlreadyExistsException("Пользователь с данным никнеймом уже существует");
+            throw new EntityAlreadyExistsException("User with this nickname already exists");
         }
         User entity = userMapper.toEntityFromDTO(user);
         if (!entity.getIsVerified()) {
             throw new EmailNotVerification("The email is not verification ");
         }
         if(!user.getIsActive()){
-            throw new NotActiveUser("The user is not active ");
+            throw new NotActiveUserException("The user is not active ");
         }
         userMapper.updateEntity(request, entity);
         userRepository.save(entity);
@@ -97,14 +96,14 @@ public class UserService {
             throw new TokenExpiredException("The token is not valid");
         }
         if (!request.getPassword().equals(request.getRepeatPassword())) {
-            throw new PasswordDoesNotMatchException("Пароли не совпадают");
+            throw new PasswordDoesNotMatchException("Password does not match");
         }
         User entity = userMapper.toEntityFromDTO(user);
         if (!entity.getIsVerified()) {
             throw new EmailNotVerification("The email is not verification ");
         }
         if(!user.getIsActive()){
-            throw new NotActiveUser("The user is not active");
+            throw new NotActiveUserException("The user is not active");
         }
         entity.setPasswordHash(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
         userMapper.updateEntity(request, entity);
@@ -118,10 +117,10 @@ public class UserService {
         }
         User entity = userMapper.toEntityFromDTO(user);
         if (userRepository.getByEmail(request.getEmail()).isPresent()) {
-            throw new EntityAlreadyExistsException("Пользователь с данной почтой уже существует");
+            throw new EntityAlreadyExistsException("USer with this email already exists");
         }
         if(!user.getIsActive()){
-            throw new NotActiveUser("The user is not active");
+            throw new NotActiveUserException("The user is not active");
         }
         userMapper.updateEntity(request, entity);
         return userMapper.toDTOFromEntity(userRepository.save(entity));
@@ -138,7 +137,7 @@ public class UserService {
         }
         userRepository.deleteToken(userId);
         userRepository.delete(userRepository.findById(userId).orElseThrow(
-                () -> new EntityDoesNotExistException("Пользователь с данным ИД не существует")
+                () -> new EntityDoesNotExistException("Can not find user with this ID")
         ));
     }
 
@@ -153,13 +152,24 @@ public class UserService {
     }
 
     @Transactional
+    public void setIsShowFriends(Long userId) {
+        userRepository.setShowFriends(userId);
+    }
+
+    @Transactional
+    public void setNotShowFriends(Long userId) {
+        userRepository.setNotShowFriend(userId);
+    }
+
+
+    @Transactional
     public void deleteSession(String login) {
         if (refreshTokenRepository.getAllByUser_UserId(userRepository.getByLogin(login).get().getUserId()) == 0) {
             throw new TokenExpiredException("The token is not valid");
         }
         User entity = userRepository.getByLogin(login).get();
         if(!entity.getIsActive()){
-            throw new NotActiveUser("The user is not active");
+            throw new NotActiveUserException("The user is not active");
         }
         if (!entity.getIsVerified()) {
             throw new EmailNotVerification("The email is not verification ");
@@ -169,14 +179,14 @@ public class UserService {
 
     public UserDTO getUserByEmail(String email) {
         User user = userRepository.getByEmail(email).orElseThrow(
-                () -> new EntityDoesNotExistException("Пользователь с данной почтой не существует")
+                () -> new EntityDoesNotExistException("Can not find user with this Email")
         );
         return userMapper.toDTOFromEntity(user);
     }
 
     public UserDTO getUserById(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new EntityDoesNotExistException("Пользователь с данным ИД не существует")
+                () -> new EntityDoesNotExistException("Can not find user with this ID")
         );
         return userMapper.toDTOFromEntity(user);
     }
@@ -184,7 +194,7 @@ public class UserService {
     public UserDTO getUserByNickName(String nickname) {
 
         User user = userRepository.getByNickname(nickname).orElseThrow(
-                () -> new EntityDoesNotExistException("Пользователь с данным ником не существует")
+                () -> new EntityDoesNotExistException("The user with this nickname does not exist")
         );
         return userMapper.toDTOFromEntity(user);
     }
@@ -192,7 +202,7 @@ public class UserService {
     public UserDTO getUserByLogin(String login) {
 
         User user = userRepository.getByLogin(login).orElseThrow(
-                () -> new EntityDoesNotExistException("Пользователь с данным логином не существует")
+                () -> new EntityDoesNotExistException("The user with this username does not exist")
         );
         return userMapper.toDTOFromEntity(user);
     }

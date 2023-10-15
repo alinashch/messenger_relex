@@ -1,6 +1,6 @@
 package com.example.chat_relex.service;
 
-import com.example.chat_relex.exceptions.NotActiveUser;
+import com.example.chat_relex.exceptions.NotActiveUserException;
 import com.example.chat_relex.exceptions.WrongCredentialsException;
 import com.example.chat_relex.exceptions.WrongInputLoginException;
 import com.example.chat_relex.models.Request.LoginForm;
@@ -72,7 +72,7 @@ public class AuthService {
     @Transactional
     public void resendCode(UserDTO user) {
         if(!user.getIsActive()){
-            throw new NotActiveUser("The user is not active");
+            throw new NotActiveUserException("The user is not active");
         }
         UUID code = verificationService.resendCode(user);
         sendCode(user, code);
@@ -86,11 +86,11 @@ public class AuthService {
     @Transactional
     public TokensDTO login(LoginForm request) {
         if(userService.getUserByLogin(request.getLogin())==null){
-            throw new WrongCredentialsException("Неправильный логин ");
+            throw new WrongCredentialsException("Wrong login");
         }
         UserDTO user = userService.getUserByLogin(request.getLogin());
         if (!bCryptPasswordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
-            throw new WrongInputLoginException("Неправильный пароль");
+            throw new WrongInputLoginException("wrong password");
         }
         return tokenService.createTokens(user);
     }

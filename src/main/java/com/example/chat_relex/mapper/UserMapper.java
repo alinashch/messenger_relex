@@ -9,6 +9,7 @@ import com.example.chat_relex.models.entity.User;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
 import java.util.Set;
 
 @Mapper()
@@ -18,6 +19,9 @@ public interface UserMapper {
 
     UserDTO toDTOFromEntity(User entity);
 
+    List<UserDTO> toDTOFromEntityList(List<User> entity);
+
+
     User toEntityFromDTO(UserDTO dto);
     CredentialsDTO toCredentialsDTOFromDTO(UserDTO dto);
 
@@ -25,7 +29,12 @@ public interface UserMapper {
 
 
     @Mapping(target = "isVerified", expression = "java(false)")
+    @Mapping(target = "isActive", expression = "java(true)")
+    @Mapping(target = "isShowFriends", expression = "java(true)")
+    @Mapping(target = "isCanReceiveMessageFromNotFriend", expression = "java(true)")
+
     User toEntityFromRequest(SignUpForm request, Set<RoleDTO> roles, String passwordHash);
+
 
     @Mapping(target = "isVerified", expression = "java(false)")
     User toEntityFromUpdateEmailInfoForm(UpdateEmailInfoForm request);

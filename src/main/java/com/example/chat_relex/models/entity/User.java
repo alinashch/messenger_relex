@@ -51,6 +51,12 @@ public class User {
     @Column(nullable = false)
     private Boolean isActive = true;
 
+    @Column(nullable = false)
+    private Boolean isShowFriends = true;
+
+    @Column(nullable = false)
+    private Boolean isCanReceiveMessageFromNotFriend= true;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
             joinColumns = {@JoinColumn(name = "user_id")},

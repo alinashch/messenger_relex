@@ -49,15 +49,22 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value ="UPDATE user_info  SET is_active = false WHERE user_id = :id", nativeQuery = true)
     void setNotActive(@Param("id") Long id);
 
+    @Modifying
+    @Query(value ="UPDATE user_info  SET is_show_friends = true WHERE user_id = :id", nativeQuery = true)
+    void setShowFriends(@Param("id") Long id);
+
+    @Modifying
+    @Query(value ="UPDATE user_info  SET is_show_friends = false WHERE user_id = :id", nativeQuery = true)
+    void setNotShowFriend(@Param("id") Long id);
+
+
     @Query(value = """
             SELECT u.*
             FROM user_info u
             JOIN friend f
                 ON u.user_id = f.friend_id
-                AND f.user_id = :userId
-                AND LOWER(u.nickname) LIKE CONCAT('%', LOWER(:nickname), '%')""", nativeQuery = true)
-    List<User> findAllFriendsByNickname(@Param("userId") Long userId,
-                                        @Param("nickname") String nickname);
+                AND f.user_id = :userId """, nativeQuery = true)
+    List<User> findAllFriendsByNickname(@Param("userId") Long userId);
 
     @Query(value = "SELECT EXISTS(SELECT 1 FROM friend WHERE user_id = :userId AND friend_id = :friendId)",
             nativeQuery = true)

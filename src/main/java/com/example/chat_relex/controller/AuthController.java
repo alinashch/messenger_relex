@@ -95,7 +95,7 @@ public class AuthController {
             })
     })
     public ResponseEntity<?> resendCode(Authentication authentication) {
-        UserDTO user = userService.getUserByEmail((String) authentication.getPrincipal());
+        UserDTO user = userService.getUserByLogin((String) authentication.getPrincipal());
         authService.resendCode(user);
         return ResponseBuilder.buildWithoutBodyResponse(OK);
     }
@@ -112,7 +112,6 @@ public class AuthController {
     })
     @SecurityRequirements
     public ResponseEntity<?> loginUser(@RequestBody @Valid LoginForm request) {
-
         return ResponseBuilder.build(OK, authService.login(request));
     }
 
@@ -131,7 +130,7 @@ public class AuthController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
             }),
             @ApiResponse(responseCode = "411", description = "Не подтверждена почта", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = EmailNotVerification.class))
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
             })
     })
     @SecurityRequirements
@@ -152,7 +151,7 @@ public class AuthController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
             }),
             @ApiResponse(responseCode = "411", description = "Не подтверждена почта", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = EmailNotVerification.class))
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
             })
     })
     @SecurityRequirements

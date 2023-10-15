@@ -2,7 +2,6 @@ package com.example.chat_relex.controller;
 
 
 import com.example.chat_relex.exceptions.EmailNotVerification;
-import com.example.chat_relex.exceptions.NotActiveUser;
 import com.example.chat_relex.models.Request.StartChatForm;
 import com.example.chat_relex.models.Response.ChatroomResponse;
 import com.example.chat_relex.models.dto.*;
@@ -46,13 +45,7 @@ public class ChatController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))
             }),
             @ApiResponse(responseCode = "409", description = "Пользователь  указанным ником не найден", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))}),
-            @ApiResponse(responseCode = "411", description = "Не подтверждена почта", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = EmailNotVerification.class))
-            }),
-            @ApiResponse(responseCode = "412", description = "Не активный пользователь", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = NotActiveUser.class))
-            })
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDTO.class))})
     })
     @SecurityRequirements
     public ResponseEntity<?> startNewChat(@RequestBody @Valid StartChatForm startChatForm, Authentication authentication) {

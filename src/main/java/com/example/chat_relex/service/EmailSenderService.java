@@ -12,9 +12,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-
-import java.io.File;
-
 @Service
 @AllArgsConstructor
 
@@ -26,7 +23,6 @@ public class EmailSenderService {
     public void sendTemplate(String toEmail, String subject, Template template, Object model) {
         sendMessage(toEmail, subject, templateEngine.compile(template, model));
     }
-
     private void sendMessage(String toEmail, String subject, String content) {
         sender.send(mimeMessage -> {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);

@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.security.web.SecurityFilterChain;
@@ -36,11 +37,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable();
         http.authorizeHttpRequests()
-                .requestMatchers("/auth/**").permitAll()
-                .requestMatchers(GET, "/auth/credentials").hasAnyAuthority(USER)
-                .requestMatchers(POST, "/auth/resend-code").hasAnyAuthority(USER)
-                .requestMatchers(PUT, "/auth/profile/**").hasAnyAuthority(USER)
-                .requestMatchers(DELETE, "/auth/*").hasAnyAuthority(USER)
+
                 .anyRequest().permitAll();
 
         http.addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -64,12 +61,24 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedMethods("*")
-                .allowedOrigins("*");
+                .allowedMethods("*");
     }
 
     @Bean
     public ForwardedHeaderFilter forwardedHeaderFilter() {
         return new ForwardedHeaderFilter();
     }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers(
+                "/swagger-resources/**",
+                "/swagger-ui.html",
+                "/swagger-ui/**",
+                "/api/v1/swagger-config",
+                "/openapi.yaml",
+                "/webjars/**"
+        );
+    }
+
 }

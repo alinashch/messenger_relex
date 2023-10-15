@@ -76,13 +76,13 @@ public class TokenUserService {
 
     private void checkIfTokenIsExpired(Date tokenExpireDate) {
         if (tokenExpireDate.before(new Date())) {
-            throw new TokenExpiredException("Старый невалидный токен", Instant.now());
+            throw new TokenExpiredException("Old invalid token", Instant.now());
         }
     }
 
     private void checkIfTokenIsExpired(Instant tokenExpireDate) {
         if (tokenExpireDate.isBefore(Instant.now())) {
-            throw new TokenExpiredException("Старый невалидный токен", Instant.now());
+            throw new TokenExpiredException("Old invalid token", Instant.now());
         }
     }
 
@@ -139,7 +139,7 @@ public class TokenUserService {
 
     private RefreshToken findRefreshTokenById(String refreshToken) {
         return refreshTokenRepository.findById(UUID.fromString(refreshToken)).orElseThrow(
-                () -> new EntityDoesNotExistException("Токен не существует")
+                () -> new EntityDoesNotExistException("The token does not exist")
         );
     }
 }

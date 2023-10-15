@@ -32,10 +32,10 @@ public class VerificationService {
     @Transactional
     public Long getVerificationUserId(String code) {
         Verification verification = verificationRepository.findByCode(UUID.fromString(code)).orElseThrow(
-                () -> new EntityDoesNotExistException("Данного кода для верификации не существует")
+                () -> new EntityDoesNotExistException("This verification code does not exist")
         );
         if (verification.getValidTill().isBefore(Instant.now())) {
-            throw new VerificationExpiredException("Истекло время действия кода");
+            throw new VerificationExpiredException("The code expired");
         }
         verificationRepository.delete(verification);
         return verification.getUser().getUserId();
@@ -43,7 +43,7 @@ public class VerificationService {
 
     public UUID resendCode(UserDTO user) {
         if (user.getIsVerified()) {
-            throw new AlreadyVerifiedUserException("Пользователь уже верифицирован");
+            throw new AlreadyVerifiedUserException("The user has already been verified");
         }
         return createCodeAndSave(user);
     }

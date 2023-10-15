@@ -24,7 +24,7 @@ public class RoleService {
 
     public RoleDTO getUserRole() {
         Role role = roleRepository.findByName(USER).orElseThrow(
-                () -> new EntityDoesNotExistException("Роль с данным именем не существует")
+                () -> new EntityDoesNotExistException("A role with this name does not exist")
         );
         return roleMapper.toDTOFromEntity(role);
     }
