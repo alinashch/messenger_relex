@@ -133,6 +133,8 @@ https://drive.google.com/file/d/1HO80c64dAvmT1SgSjSx3a9_W809q_ikp/view?usp=shari
 Без подтверждения почты не доступны функции мессенджера
 - POST запрос по адресу http://localhost:8080/auth/verify/{code}, где {code}-код из письма.
   В примере 1. пришел код  5ab62be4-9c4d-42c3-9973-8fb96971e05b. Следовательно запрос на адрес http://localhost:8080/auth/verify/5ab62be4-9c4d-42c3-9973-8fb96971e05b
+> Примеры запросов
+
 1. Корректный код
 - request body:
   `{
@@ -146,6 +148,7 @@ https://drive.google.com/file/d/1HO80c64dAvmT1SgSjSx3a9_W809q_ikp/view?usp=shari
 - response (status: 201 Created) :
   `     "message": "This verification code does not exist",
   `
+
 
 
 
