@@ -12,7 +12,6 @@ spring:
   sql:
     init:
       platform: postgres
-
   mail:
     host: smtp.gmail.com
     port: 465
@@ -24,13 +23,10 @@ spring:
           auth: true
           starttls.enable: true
           ssl.enable: true
+
 emailTemplate:
   verificationLink: http://localhost:8080/auth/verify
 
-springdoc:
-  api-docs:
-    enabled: false
-  swagger-ui:
-    url: /openapi.yaml
-    path: /swagger-ui.html
+
+
 

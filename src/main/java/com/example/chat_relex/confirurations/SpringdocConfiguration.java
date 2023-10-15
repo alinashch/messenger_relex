@@ -1,13 +1,6 @@
 package com.example.chat_relex.confirurations;
 
 
-import lombok.RequiredArgsConstructor;
-import org.springdoc.core.SpringDocConfigProperties;
-import org.springdoc.core.SpringDocConfiguration;
-import org.springdoc.core.providers.ObjectMapperProvider;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Contact;
@@ -20,10 +13,10 @@ import org.springframework.context.annotation.Configuration;
 @SecurityScheme(name = "bearerAuth", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "bearer")
 @OpenAPIDefinition(
         info = @Info(
-                title = "relex messanger",
-                description = "Описание всех эндпоинтов сервиса ",
-                contact = @Contact(name = "Алина Щербинина", email = "alina280702@mail.ru"),
-                version = "1.0.11"),
+                title = "Relex Messenger",
+                description = "Описание всех эндпоинтов сервиса \"Relex Messenger\"",
+                contact = @Contact(name = "Алина Щербинина", email = "alina.scsh.28072002@gmail.com"),
+                version = "1.0.1"),
         security = @SecurityRequirement(name = "bearerAuth"))
 public class SpringdocConfiguration {
 }

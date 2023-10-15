@@ -24,8 +24,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SocketService {
-
-
     private final ChatRoomRepository chatRoomRepository;
 
     private final MessageRepository messageRepository;
@@ -36,8 +34,6 @@ public class SocketService {
 
     private final UserMapper userMapper;
 
-
-
     @Transactional
     public void sendMessage(String chatRoomId, String eventName, SocketIOClient senderClient, String message, String senderNickName) {
         for (
@@ -45,7 +41,9 @@ public class SocketService {
             if (!client.getSessionId().equals(senderClient.getSessionId())) {
                 ChatRoom chatRoom = chatRoomRepository.findById(Long.valueOf(chatRoomId)).get();
                 User sender = userMapper.toEntityFromDTO(userService.getUserByNickName(senderNickName));
+                System.out.println(sender.getNickname());
                 MessageResponse messageResponse = new MessageResponse(message, sender, chatRoom);
+
                 messageRepository.save(messageMapper.toEntityFromResponse(messageResponse));
                 UserRequest userRequest = userMapper.toRequestFromEntity(sender);
                 client.sendEvent(eventName, new MessageRequest(message, userRequest));
@@ -57,7 +55,6 @@ public class SocketService {
     public List<Message> getMessageHistory(String chatRoomId) {
         ChatRoom chatRoom = chatRoomRepository.findById(Long.valueOf(chatRoomId)).get();
         List<Message> messages = messageRepository.getByChatRoom(chatRoom);
-
         return messages;
     }
 
@@ -65,8 +62,9 @@ public class SocketService {
         for (
                 SocketIOClient client : senderClient.getNamespace().getRoomOperations(chatRoomId).getClients()) {
             User sender = userMapper.toEntityFromDTO(userService.getUserByNickName(senderNickName));
-            long id=chatRoomRepository.findByChatRoomIdAndUserSenderId(Long.valueOf(chatRoomId), sender.getUserId());
-            User recipient = userMapper.toEntityFromDTO(userService.getUserById(id));
+            long idSender=chatRoomRepository.findByChatRoomIdAndUserSenderId(Long.valueOf(chatRoomId), sender.getUserId());
+            System.out.println(idSender);
+            User recipient = userMapper.toEntityFromDTO(userService.getUserById(idSender));
             UserRequest userRequest = userMapper.toRequestFromEntity(recipient);
             if (eventName.equals("get_message")) {
                 client.sendEvent(eventName, new MessageRequest(message, userRequest));

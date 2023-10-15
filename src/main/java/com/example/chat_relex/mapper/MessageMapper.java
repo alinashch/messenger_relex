@@ -12,12 +12,10 @@ public interface MessageMapper {
 
     MessageMapper INSTANCE = Mappers.getMapper(MessageMapper.class);
 
-    MessageDTO toDTOFromEntity(Message entity);
 
     Message toEntityFromDTO(MessageDTO entity);
 
     Message toEntityFromResponse(MessageResponse entity);
 
-    Message toEntityFromRequest(MessageRequest entity);
 
 }

@@ -21,5 +21,4 @@ public class ChatRelexApplication {
         SpringApplication.run(ChatRelexApplication.class, args);
     }
 
-
 }

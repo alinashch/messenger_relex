@@ -15,6 +15,7 @@ public class CredentialsDTO {
     private String email;
     private String nickname;
     private Boolean isVerified;
+    private Boolean isActive;
     private String login;
     private Set<RoleDTO> roles;
 }

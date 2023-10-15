@@ -32,7 +32,6 @@ import java.util.UUID;
 public class TokenUserService {
 
     public static final String TOKEN_PREFIX = "Bearer ";
-
     private static final String NICKNAME_CLAIM = "nickname";
     private static final String EXPIRATION_CLAIM = "exp";
     private static final String ROLES_CLAIM = "roles";
@@ -77,13 +76,13 @@ public class TokenUserService {
 
     private void checkIfTokenIsExpired(Date tokenExpireDate) {
         if (tokenExpireDate.before(new Date())) {
-            throw new TokenExpiredException("Старый невалидный токен", Instant.now());
+            throw new TokenExpiredException("Old invalid token", Instant.now());
         }
     }
 
     private void checkIfTokenIsExpired(Instant tokenExpireDate) {
         if (tokenExpireDate.isBefore(Instant.now())) {
-            throw new TokenExpiredException("Старый невалидный токен", Instant.now());
+            throw new TokenExpiredException("Old invalid token", Instant.now());
         }
     }
 
@@ -132,19 +131,15 @@ public class TokenUserService {
     public TokensDTO refreshAccessToken(RefreshTokenRequest request) {
         RefreshToken refreshToken = findRefreshTokenById(request.getRefreshToken());
         checkIfTokenIsExpired(refreshToken.getValidTill());
-        UserDTO userDTO=userService.getUserByEmail(refreshToken.getUser().getEmail());
-        if(!userDTO.getIsVerified()){
-
-        }
         return new TokensDTO(
-                generateAccessToken(userDTO),
+                generateAccessToken(userService.getUserByEmail(refreshToken.getUser().getEmail())),
                 refreshToken.getToken().toString()
         );
     }
 
     private RefreshToken findRefreshTokenById(String refreshToken) {
         return refreshTokenRepository.findById(UUID.fromString(refreshToken)).orElseThrow(
-                () -> new EntityDoesNotExistException("Токен не существует")
+                () -> new EntityDoesNotExistException("The token does not exist")
         );
     }
 }

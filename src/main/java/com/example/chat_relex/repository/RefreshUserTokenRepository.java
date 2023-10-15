@@ -17,7 +17,6 @@ import java.util.UUID;
 @Repository
 public interface RefreshUserTokenRepository extends JpaRepository<RefreshToken, UUID> {
 
-
     @Modifying
     @Query(value = """
                     INSERT INTO refresh_token(token, valid_till, user_id)

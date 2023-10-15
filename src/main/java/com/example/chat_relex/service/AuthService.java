@@ -1,16 +1,22 @@
 package com.example.chat_relex.service;
 
-import com.example.chat_relex.exceptions.TokenExpiredException;
+import com.example.chat_relex.exceptions.NotActiveUserException;
 import com.example.chat_relex.exceptions.WrongCredentialsException;
 import com.example.chat_relex.exceptions.WrongInputLoginException;
 import com.example.chat_relex.models.Request.LoginForm;
 import com.example.chat_relex.models.Request.SignUpForm;
+import com.example.chat_relex.models.Request.UpdateEmailInfoForm;
+import com.example.chat_relex.models.Request.UpdateProfileRequest;
 import com.example.chat_relex.models.dto.TokensDTO;
 import com.example.chat_relex.models.dto.UserDTO;
 import com.example.chat_relex.models.dto.VerificationEmailDTO;
 import com.example.chat_relex.template.EmailTemplate;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
@@ -45,6 +51,12 @@ public class AuthService {
         return tokenService.createTokens(registeredUser);
     }
 
+    @Transactional
+    public void resendCode(UpdateEmailInfoForm request, UserDTO user) {
+        UserDTO userDTO=userService.updateEmail(user, request);
+        UUID code = verificationService.createCodeAndSave(userDTO);
+        sendCode(userDTO, code);
+    }
 
     @Async
     void sendCode(UserDTO user, UUID code) {
@@ -59,6 +71,9 @@ public class AuthService {
     }
     @Transactional
     public void resendCode(UserDTO user) {
+        if(!user.getIsActive()){
+            throw new NotActiveUserException("The user is not active");
+        }
         UUID code = verificationService.resendCode(user);
         sendCode(user, code);
     }
@@ -71,15 +86,11 @@ public class AuthService {
     @Transactional
     public TokensDTO login(LoginForm request) {
         if(userService.getUserByLogin(request.getLogin())==null){
-            throw new WrongCredentialsException("Неправильный логин ");
+            throw new WrongCredentialsException("Wrong login");
         }
         UserDTO user = userService.getUserByLogin(request.getLogin());
-        if(!user.getIsVerified()){
-            throw new TokenExpiredException("Email not verification ");
-
-        }
         if (!bCryptPasswordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
-            throw new WrongInputLoginException("Неправильный пароль");
+            throw new WrongInputLoginException("wrong password");
         }
         return tokenService.createTokens(user);
     }
