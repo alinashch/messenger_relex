@@ -12,6 +12,7 @@ spring:
   sql:
     init:
       platform: postgres
+
   mail:
     host: smtp.gmail.com
     port: 465
@@ -26,7 +27,3 @@ spring:
 
 emailTemplate:
   verificationLink: http://localhost:8080/auth/verify
-
-
-
-
