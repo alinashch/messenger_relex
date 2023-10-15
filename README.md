@@ -4,7 +4,7 @@
 Приложение необходимо разработать в виде RESTful API на языке Java с использованием фреймворка Spring Boot. Данные, получаемые и отправляемые приложением, должны быть в формате JSON.
 
 # Видео
-https://drive.google.com/file/d/1HO80c64dAvmT1SgSjSx3a9_W809q_ikp/view?usp=sharing
+https://drive.google.com/file/d/1uRV7A9AAzgnqZMpRyb_x5eytgjV7gltW/view?usp=sharing
 
 # Было реализовано
 - регистрация пользователя(указать логин, ник, имя, фамилию, почту, пароль)
@@ -40,6 +40,12 @@ https://drive.google.com/file/d/1HO80c64dAvmT1SgSjSx3a9_W809q_ikp/view?usp=shari
 ## Authentication API
 ## Регистрация нового пользователя
 - POST запрос по адресу http://localhost:8080/auth/register
+
+# Настройка для запуска
+Для того чтобы сервис раотал корректно, необходимо в таблицу role внести следующие зависимости:
+![Alt text](image.png)
+
+# Запросы 
 
 
 
