@@ -3,8 +3,9 @@
 
 Приложение необходимо разработать в виде RESTful API на языке Java с использованием фреймворка Spring Boot. Данные, получаемые и отправляемые приложением, должны быть в формате JSON.
 
-# Видео
-https://drive.google.com/file/d/1uRV7A9AAzgnqZMpRyb_x5eytgjV7gltW/view?usp=sharing
+# Видео представление
+
+https://drive.google.com/file/d/1HO80c64dAvmT1SgSjSx3a9_W809q_ikp/view?usp=sharing
 
 # Было реализовано
 - регистрация пользователя(указать логин, ник, имя, фамилию, почту, пароль)
@@ -32,20 +33,14 @@ https://drive.google.com/file/d/1uRV7A9AAzgnqZMpRyb_x5eytgjV7gltW/view?usp=shari
 # Swagger
 Для просмотра swagger документации перейдите по ссылке: http://localhost:8080/swagger-ui/index.html
 
-# Настройка для запуска
-Для того чтобы сервис работал корректно, необходимо в таблицу role внести следующие зависимости:
-![Alt text](image.png)
+# База данных
+ > Для тестирования приложения были созданы следующие таблицы (создание происходило непосредственно при первом запуске проекта с помощью файла `db/changelog/db.changelog-master.yaml`, sql исходники находятся в `db/changelog/changeset/tables` )
+
 
 # Запросы 
 ## Authentication API
 ## Регистрация нового пользователя
 - POST запрос по адресу http://localhost:8080/auth/register
-
-# Настройка для запуска
-Для того чтобы сервис раотал корректно, необходимо в таблицу role внести следующие зависимости:
-![Alt text](image.png)
-
-# Запросы 
 
 
 
