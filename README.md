@@ -55,6 +55,69 @@ https://drive.google.com/file/d/1HO80c64dAvmT1SgSjSx3a9_W809q_ikp/view?usp=shari
 
 # База данных
 > Для тестирования приложения были созданы следующие таблицы (создание происходило непосредственно при первом запуске проекта с помощью файла `db/changelog/db.changelog-master.yaml`, sql исходники находятся в `db/changelog/changeset/tables` )
+## user_info
+| user_id | email           | first_name   | is_verified | last_name | is_show_friends   | nickname   | password_hash                                                | login          | is_active  | is_can_receive_message_from_not_friend   |
+|---------|-----------------|--------------|-----------|-----------|-------------------|------------|--------------------------------------------------------------|----------------|------------|------------------------------------------|
+| 24      | vanya@mail.ru   | Иван         | true      | Иванов    | false             | Ivan       | $2a$10$dweYEelyC84Lb2ekACcDi..DSMzmxq6Fb3.BAMKs.gpRMGscurRmq | nanya          | true       | true                                     |
+| 23      | vaciliy@mail.ru | Василий      | true      | Маркин    | true              | Vasya      | $2a$10$3Xu4.bjMPWeJlPRMod8Qf.43dt.3DeogjIZ8tYxphUw4WNPeP72L. | vasya          | true       | false                                    |
+| 21      | nata@mail.ru    | Наталья      | true      | Маркина   | true              | natasha    | $2a$10$Mhdk0CiNHL0U7wET7NVbFOdMfrl5bdeN.wI6w7NT1GyCMcbieq9qK | nata-nata      | false      | true                                     |
+| 22      | masha@mail.ru   | Мария        | false     | Маркина   | true              | mashenka   | $2a$10$0NS.P857yHgBXXxv1o7REO//tItCJN0MThj1C0M1Vet5JVeRwIxhK | masha-mary     | true       | true                                     |
+| 20       | petya@mail.ru   | Петр         | true      | Петров    | true              | petp       | $2a$10$lY2x0A0HDrfZcXlhj/QhA.zipoN6uJbzAnB.eU80UsdcRZetLv7fa | petr-petrovich | true       | true                                     |
+
+## user_role
+
+| user_id | role_id |
+|---------|---------|
+| 20      | 1       |
+| 21      | 1       |
+| 22      | 1       |
+| 23      | 1       |
+| 24      | 1       |
+
+## verification
+
+| verification_id                      | code                                 | valid_till                        | user_id |
+|--------------------------------------|--------------------------------------|-----------------------------------|---------|
+| 872a6121-d3c9-4bf3-bb36-10c80fd5aeb7 | 22ac50cf-fe54-4a4c-81c0-eac87c7f21a1 | 2023-10-16 11:06:53.639564 +00:00 | 20      |
+| 7decbbb7-b7be-48f9-aef9-3d198fc5a2a3 | bb9f5e19-7fc4-4016-b714-5d5748e47f8a | 2023-10-16 11:06:53.639564 +00:00 | 21      |
+| 3565c9d9-5611-4214-845b-794016f0f013 | 00f32f2c-45b7-452d-b1ad-b545690b1a53 | 2023-10-16 11:06:53.639564 +00:00 | 22      |
+| 2b354b9e-692c-4520-bd7d-7c6969519636 | 477894a2-5a72-49d7-bf98-dbb8d9dfc70c | 2023-10-16 11:06:53.639564 +00:00 | 23      |
+| 1d17c0e7-ecf9-4cc6-8192-cf1358818072 | a9c33671-f5b0-45d1-9545-acb3ea069dc2 | 2023-10-16 11:06:53.639564 +00:00 | 24      |
+
+
+## refresh-token
+
+| token                                | valid_till                        | user_id |
+|--------------------------------------|-----------------------------------|---------|
+| ffe9c30f-37c7-48d8-9111-f01f43e9981c | 2023-11-15 10:03:39.934483 +00:00 | 20      |
+| 0906d86e-5eca-4493-9cce-eaab457ecfe5 | 2023-11-15 10:03:39.934483 +00:00 | 21      |
+| 4e332c19-156c-46a2-9aa5-cb21260e5af9 | 2023-11-15 10:03:39.934483 +00:00 | 22      |
+| 47219aa6-c291-4d95-9da2-bf1e2ae39eef | 2023-11-15 10:03:39.934483 +00:00 | 23      |
+| 2b62bba2-5c43-42bd-817c-251d44c56bcd | 2023-11-15 10:03:39.934483 +00:00 | 24      |
+
+## chat_room
+
+| chat_room_id |
+|--------------|
+
+## user_chat_room
+
+| chat_room_id | user_id |
+|--------------|---------|
+
+## friend
+
+| user_id | friend_id |
+|---------|-----------|
+| 20      | 24        |
+| 24      | 20        |
+
+## message
+
+| message_id | chat_room_id | user_id | message |
+|------------|--------------|---------|---------|
+
+
 ## Настройка базы данны
 Чтобы приложение корректно запускалось нужно создать базу данных jdbc:postgresql://localhost:5432/relex_chat и в файле application.yml  указать password  и username в соответствующие строки.
 > Для корректной работы приложения таблица role должна содержать следующие данные. Вообще, Liquibase настроена, чтобы все автоматически вставилось в таблицу, но у вас может пойти что-то не так и тогда нужно вручную вставить данные
@@ -464,11 +527,169 @@ C данными в теле пользователя, который уже б�
 - request body:
   ``
 - response (status: 409 Conflict) :
-  `    "message": "Пользователя не было в друзьях",`
+  `"message": "Пользователя не было в друзьях",`
 4. Корректный токен , но некорректный ник
 -  http://localhost:8080/friends/test
 - Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
 - request body:
   ``
 - response (status: 404 Not Found) :
-  `        "message": "The user with this nickname does not exist",`
+  `"message": "The user with this nickname does not exist",`
+
+## User API
+
+### Посмотр личной информации пользователя
+- GET запрос по адресу http://localhost:8080/user/credentials
+- В заголовке передать токен
+>Примеры запросов
+1. Корректный токен 
+- http://localhost:8080/user/credentials
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
+- request body:
+  ``
+- response (status: 200 OK) :
+`{
+  "userId": 25,
+  "firstName": "Алина",
+  "lastName": "Щербинина",
+  "email": "alina280702@mail.ru",
+  "nickname": "alina_shch",
+  "isVerified": true,
+  "isActive": true,
+  "login": "alina-alina",
+  "roles": [
+  {
+  "roleId": 1,
+  "name": "USER",
+  "authority": "USER"
+  }
+  ]
+  }`
+
+
+
+### Обновление личной информации пользователя
+- PUT запрос по адресу http://localhost:8080/user/profile/update/personal-information
+- В заголовке передать токен
+>Примеры запросов
+1. Корректный токен и не повторяющийся ник
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
+- request body:
+  `{
+  "firstName":"Alina",
+  "lastName":"Shcherbinina",
+  "nickname":"alinashch"
+  }`
+- response (status: 200 OK) :
+  ``
+2. Корректный токен и  повторяющийся ник
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
+- request body:
+  `{
+  "firstName":"Alina",
+  "lastName":"Shcherbinina",
+  "nickname":"petp"
+  }`
+- response (status: 409 Conflict) : 
+  `"message": "User with this nickname already exists",` 
+
+### Обновление личной пароля
+- PUT запрос по адресу http://localhost:8080/user/profile/update/password
+- В заголовке передать токен
+>Примеры запросов
+1. Корректный токен и не повторяющийся ник
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
+- request body:
+  `{
+  "password":"1234asdf",
+  "repeatPassword":"1234asdf"
+  }`
+- response (status: 200 OK) :
+  ``
+2. Корректный токен и  повторяющийся ник
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
+- request body:
+  `{
+   password":"1234asdf",
+  "repeatPassword":"123456asdf"
+  }`
+- response (status: 400 Bad Request) :
+  `"message": "Password does not match",` 
+
+
+### Обновление email
+- PUT запрос по адресу http://localhost:8080/user/profile/update/email
+- В заголовке передать токен
+>Примеры запросов
+1. Корректный токен и не повторяющийся email
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
+- request body:
+  `{
+  "email":"alina22222@mail.ru"
+  }`
+- response (status: 200 OK) :
+  ``
+2. Корректный токен и повторяющийся email
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
+- request body:
+  `{
+   "email":"masha@mail.ru"
+  }`
+- response (status: 409 Conflict) :
+  `"message": "User with this email already exists",` 
+
+### Обновление статуса профиля - установить "активен"
+- PUT запрос по адресу http://localhost:8080/user/profile/update/set-active
+- В заголовке передать токен
+>Примеры запросов
+1. Корректный токен 
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
+- request body:
+  ``
+- response (status: 200 OK) :
+  ``
+
+### Обновление статуса профиля - установить "неактивен"
+- PUT запрос по адресу http://localhost:8080/user/profile/update/set-not-active
+- В заголовке передать токен
+>Примеры запросов
+1. Корректный токен 
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
+- request body:
+  ``
+- response (status: 200 OK) :
+  ``
+
+
+### Обновление информации и показе списка друзей-установить "показывать друзей"
+- PUT запрос по адресу http://localhost:8080/user/profile/update/set-show-friends
+- В заголовке передать токен
+>Примеры запросов
+1. Корректный токен
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
+- request body:
+  ``
+- response (status: 200 OK) :
+  ``
+
+### Обновление информации и показе списка друзей-установить "не показывать друзей"
+- PUT запрос по адресу http://localhost:8080/user/profile/update/set-not-show-friends
+- В заголовке передать токен
+>Примеры запросов
+1. Корректный токен
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
+- request body:
+  ``
+- response (status: 200 OK) :
+  ``
+### Удалить пользователя
+- DELETE запрос по адресу http://localhost:8080/user/delete
+- В заголовке передать токен
+>Примеры запросов
+1. Корректный токен
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
+- request body:
+  ``
+- response (status: 204 No Content) :
+  ``
+

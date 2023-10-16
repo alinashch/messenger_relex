@@ -76,7 +76,7 @@ public class UserService {
         if (refreshTokenRepository.getAllByUser_UserId(user.getUserId()) == 0) {
             throw new TokenExpiredException("The token is not valid");
         }
-        if (userRepository.existsByLogin(request.getNickname())) {
+        if (userRepository.existsByNickname(request.getNickname())) {
             throw new EntityAlreadyExistsException("User with this nickname already exists");
         }
         User entity = userMapper.toEntityFromDTO(user);
@@ -116,6 +116,7 @@ public class UserService {
             throw new TokenExpiredException("The token is not valid");
         }
         User entity = userMapper.toEntityFromDTO(user);
+        entity.setIsVerified(false);
         if (userRepository.getByEmail(request.getEmail()).isPresent()) {
             throw new EntityAlreadyExistsException("USer with this email already exists");
         }
