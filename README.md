@@ -29,6 +29,7 @@ https://drive.google.com/file/d/1HO80c64dAvmT1SgSjSx3a9_W809q_ikp/view?usp=shari
 - API, позволяющий просматривать историю сообщений с конкретным пользователем
 > Дополнительная часть 
 - API, позволяющий просматривать друзей, а также добавлять в друзья другого пользователя
+- API, позволяющий удалить пользователя(сама добавила)
 - есть возможность ограничивать получение сообщений только своим кругом друзей
 - есть возможность просматривать друзей другого пользователя, и, соответственно, возможность скрывать свой список друзей
 
@@ -230,7 +231,9 @@ C данными в теле пользователя, который уже б�
   `{"message": "wrong password",}`
 
 ### Выход из мессенджера 
-POST запрос по адресу http://localhost:8080/auth/signOut
+- POST запрос по адресу http://localhost:8080/auth/signOut
+- В заголовке передать токен
+
 > Примеры запросов
 1. Корректный заголовок и верифицированный email
 - Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
@@ -256,7 +259,9 @@ POST запрос по адресу http://localhost:8080/auth/signOut
 > Аккаунт отправителя и получателя должны быть активны и верифицированы.
 > Также у пользователей должно стоять, чтобы можно было получать сообщения от всех или они должны быть друг у друга в друзьях
 ### старт chat-room
-   POST запрос по адресу http://localhost:8080/auth/signOut
+- POST запрос по адресу http://localhost:8080/auth/signOut
+- В заголовке передать токен
+
 > Примеры запросов
 1. Корректный запрос и токен
 - Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
@@ -322,3 +327,148 @@ POST запрос по адресу http://localhost:8080/auth/signOut
 ![img_10.png](img_10.png)
 
 ## Friend API
+
+### Добавить пользователя в друзья
+- POST запрос по адресу http://localhost:8080/friends/{nickname}, где  {nickname}-ник пользователя, кого хотим добавить 
+- В заголовке передать токен
+>Примеры запросов
+1. Корректный токен и ник пользователя
+-  http://localhost:8080/friends/petp
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
+- request body:
+  ``
+- response (status: 200 OK) :
+  ``
+2. Некорректный токен и корректный  ник пользователя
+- http://localhost:8080/friends/petp
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxNiIsImV4cCI6MTY5NzM5ODI1OCwicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6InBldHlhQG1haWwucnUiLCJsb2dpbiI6InBldHItcGV0cm92aWNoIiwibmlja25hbWUiOiJwZXRwIiwiZnVsbE5hbWUiOiLQn9C10YLRgCDQn9C10YLRgNC-0LIifQ.5UYyGiyytCgSxNkG8lHIsIb-GUmDlftnwjEEQCWdDmA}`
+- request body:
+  ``
+- response (status: 403 Forbidden) :
+  `    {"message": "The Token has expired on 2023-10-15T19:30:58Z."} `
+3. Корректный токен и пользовтель уже в друзьях
+-  http://localhost:8080/friends/petp
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
+- request body:
+  ``
+- response (status: 409 Conflict) :
+  `    "message": "Пользователь уже добавлен в друзья",`
+4. Корректный токен , но некорректный ник 
+-  http://localhost:8080/friends/test
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
+- request body:
+  ``
+- response (status: 404 Not Found) :
+  `        "message": "The user with this nickname does not exist",`
+
+### Посмотреть свой список друзей 
+- GET запрос по адресу http://localhost:8080/friends
+- В заголовке передать токен
+
+>Примеры запросов
+1. Корректный токен 
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
+- request body:
+  ``
+- response (status: 200 OK) :
+  `{
+   "firstName": "Петр",
+   "lastName": "Петров",
+   "email": "petya@mail.ru",
+   "nickname": "petp",
+   "isVerified": true,
+   "isActive": true,
+   "isShowFriends": true,
+   "isCanReceiveMessageFromNotFriend": true,
+   "roles": [
+   {
+   "roleId": 1,
+   "name": "USER",
+   "authority": "USER"
+   } }`
+### Посмотреть список друзей другого пользователя
+- GET запрос по адресу http://localhost:8080/friends/{nickname}/all-friends,где  {nickname}-ник пользователя, чьих друзей хотим помотреть
+- В заголовке передать токен
+
+>Примеры запросов
+1. Корректный токен и пользователь не скрыл список друзей
+- http://localhost:8080/friends/petp/all-friends
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
+- request body:
+  ``
+- response (status: 200 OK) :
+`[
+  {
+  "firstName": "Алина",
+  "lastName": "Щербинина",
+  "email": "alina280702@mail.ru",
+  "nickname": "alina_shch",
+  "isVerified": true,
+  "isActive": true,
+  "isShowFriends": true,
+  "isCanReceiveMessageFromNotFriend": true,
+  "roles": [
+  {
+  "roleId": 1,
+  "name": "USER",
+  "authority": "USER"
+  }
+  ]
+  },
+  {
+  "firstName": "Иван",
+  "lastName": "Иванов",
+  "email": "vanya@mail.ru",
+  "nickname": "Ivan",
+  "isVerified": true,
+  "isActive": true,
+  "isShowFriends": false,
+  "isCanReceiveMessageFromNotFriend": true,
+  "roles": [
+  {
+  "roleId": 1,
+  "name": "USER",
+  "authority": "USER"
+  }
+  ],
+  ]`
+2. Корректный токен, но пользователь скрыл список друзей
+- http://localhost:8080/friends/Ivan/all-friends
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
+- request body:
+  ``
+- response (status: 403 Forbidden) :
+`"message": "The user has hidden the friends lis",
+  `
+### Удалить пользователя из друзьей
+- DELETE запрос по адресу http://localhost:8080/friends/{nickname}, где  {nickname}-ник пользователя, кого хотим добавить
+- В заголовке передать токен
+>Примеры запросов
+1. Корректный токен и ник пользователя
+-  http://localhost:8080/friends/petp
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
+- request body:
+  ``
+- response (status: 200 OK) :
+  ``
+2. Некорректный токен и корректный ник пользователя
+- http://localhost:8080/friends/petp
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxNiIsImV4cCI6MTY5NzM5ODI1OCwicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6InBldHlhQG1haWwucnUiLCJsb2dpbiI6InBldHItcGV0cm92aWNoIiwibmlja25hbWUiOiJwZXRwIiwiZnVsbE5hbWUiOiLQn9C10YLRgCDQn9C10YLRgNC-0LIifQ.5UYyGiyytCgSxNkG8lHIsIb-GUmDlftnwjEEQCWdDmA}`
+- request body:
+  ``
+- response (status: 403 Forbidden) :
+  `    {"message": "The Token has expired on 2023-10-15T19:30:58Z."} `
+3. Корректный токен и пользовтель не был в друзьях
+-  http://localhost:8080/friends/petp
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
+- request body:
+  ``
+- response (status: 409 Conflict) :
+  `    "message": "Пользователя не было в друзьях",`
+4. Корректный токен , но некорректный ник
+-  http://localhost:8080/friends/test
+- Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
+- request body:
+  ``
+- response (status: 404 Not Found) :
+  `        "message": "The user with this nickname does not exist",`
