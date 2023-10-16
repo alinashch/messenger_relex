@@ -1,11 +1,8 @@
 package com.example.chat_relex.controller;
-import static com.example.chat_relex.models.constant.Tag.FRIEND;
-import static org.springframework.http.HttpStatus.OK;
 
 import com.example.chat_relex.models.dto.ExceptionDTO;
 import com.example.chat_relex.models.dto.FriendDTO;
 import com.example.chat_relex.models.dto.UserDTO;
-import com.example.chat_relex.models.entity.User;
 import com.example.chat_relex.service.FriendService;
 import com.example.chat_relex.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +15,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.example.chat_relex.models.constant.Tag.FRIEND;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @AllArgsConstructor

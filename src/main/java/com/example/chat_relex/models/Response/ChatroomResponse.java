@@ -1,6 +1,5 @@
 package com.example.chat_relex.models.Response;
 
-
 import lombok.*;
 
 @Data

@@ -13,7 +13,6 @@ import java.util.Set;
 import static com.example.chat_relex.models.constant.Role.ADMIN;
 import static com.example.chat_relex.models.constant.Role.USER;
 
-
 @Service
 @AllArgsConstructor
 public class RoleService {

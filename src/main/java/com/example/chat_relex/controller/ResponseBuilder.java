@@ -1,12 +1,10 @@
 package com.example.chat_relex.controller;
 
 
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
 import java.util.Map;
 
 @UtilityClass

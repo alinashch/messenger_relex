@@ -1,21 +1,15 @@
 package com.example.chat_relex.components;
 
-import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
 import com.example.chat_relex.models.Request.MessageRequest;
-import com.example.chat_relex.models.Response.MessageResponse;
 import com.example.chat_relex.models.entity.Message;
-import com.example.chat_relex.service.ChatRoomService;
 import com.example.chat_relex.service.SocketService;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.security.core.Authentication;
 
-import java.util.Collection;
 import java.util.List;
 
 @Slf4j

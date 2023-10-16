@@ -38,7 +38,6 @@ public interface UserMapper {
 
     @Mapping(target = "isVerified", expression = "java(false)")
     User toEntityFromUpdateEmailInfoForm(UpdateEmailInfoForm request);
-    User toEntityFromUpdateProfilePassword(UpdateProfilePassword request, Set<RoleDTO> roles, String passwordHash);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntity(UpdateProfileRequest request, @MappingTarget User entity);

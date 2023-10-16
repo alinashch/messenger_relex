@@ -1,7 +1,5 @@
 package com.example.chat_relex.models.dto;
 
-import com.example.chat_relex.models.entity.ChatRoom;
-import com.example.chat_relex.models.entity.User;
 import lombok.*;
 
 @Data

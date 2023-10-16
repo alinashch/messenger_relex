@@ -1,8 +1,10 @@
 package com.example.chat_relex.controller;
-import com.example.chat_relex.models.Request.*;
+
+import com.example.chat_relex.models.Request.UpdateEmailInfoForm;
+import com.example.chat_relex.models.Request.UpdateProfilePassword;
+import com.example.chat_relex.models.Request.UpdateProfileRequest;
 import com.example.chat_relex.models.dto.CredentialsDTO;
 import com.example.chat_relex.models.dto.ExceptionDTO;
-import com.example.chat_relex.models.dto.TokensDTO;
 import com.example.chat_relex.models.dto.UserDTO;
 import com.example.chat_relex.service.AuthService;
 import com.example.chat_relex.service.UserService;
@@ -10,25 +12,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirements;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.token.TokenService;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-
 import static com.example.chat_relex.models.constant.Tag.USER;
-import static org.apache.naming.ResourceRef.AUTH;
-import static org.springframework.http.HttpStatus.*;
-import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
-import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @AllArgsConstructor

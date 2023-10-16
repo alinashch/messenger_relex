@@ -3,9 +3,6 @@ package com.example.chat_relex.models.Response;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Data
 @Builder
 @AllArgsConstructor

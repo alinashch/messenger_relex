@@ -6,8 +6,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 
-import java.util.Set;
-
 @Mapper
 public interface RoleMapper {
 
@@ -15,7 +13,4 @@ public interface RoleMapper {
 
     RoleDTO toDTOFromEntity(Role entity);
 
-    Set<RoleDTO> toDTOFromEntitySet(Set<Role> entities);
-
-    Set<Role> toEntityFromDTOSet(Set<RoleDTO> dtos);
 }

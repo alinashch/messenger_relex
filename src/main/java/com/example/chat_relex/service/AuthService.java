@@ -6,22 +6,17 @@ import com.example.chat_relex.exceptions.WrongInputLoginException;
 import com.example.chat_relex.models.Request.LoginForm;
 import com.example.chat_relex.models.Request.SignUpForm;
 import com.example.chat_relex.models.Request.UpdateEmailInfoForm;
-import com.example.chat_relex.models.Request.UpdateProfileRequest;
 import com.example.chat_relex.models.dto.TokensDTO;
 import com.example.chat_relex.models.dto.UserDTO;
 import com.example.chat_relex.models.dto.VerificationEmailDTO;
 import com.example.chat_relex.template.EmailTemplate;
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.UUID;
 

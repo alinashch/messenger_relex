@@ -1,10 +1,11 @@
 package com.example.chat_relex.controller;
 
 
-import com.example.chat_relex.exceptions.EmailNotVerification;
 import com.example.chat_relex.models.Request.StartChatForm;
 import com.example.chat_relex.models.Response.ChatroomResponse;
-import com.example.chat_relex.models.dto.*;
+import com.example.chat_relex.models.dto.ExceptionDTO;
+import com.example.chat_relex.models.dto.TokensDTO;
+import com.example.chat_relex.models.dto.UserDTO;
 import com.example.chat_relex.service.ChatRoomService;
 import com.example.chat_relex.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.example.chat_relex.models.constant.Tag.CHAT;
-import static org.apache.naming.ResourceRef.AUTH;
 import static org.springframework.http.HttpStatus.OK;
 
 

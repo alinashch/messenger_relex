@@ -1,7 +1,5 @@
 package com.example.chat_relex.repository;
 
-import com.example.chat_relex.models.entity.RefreshToken;
-import com.example.chat_relex.models.entity.Role;
 import com.example.chat_relex.models.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -38,23 +36,23 @@ public interface UserRepository extends JpaRepository<User, Long> {
     void deleteToken(@Param("userId") Long id);
 
     @Modifying
-    @Query(value ="UPDATE user_info  SET is_verified = true WHERE user_id = :id", nativeQuery = true)
+    @Query(value = "UPDATE user_info  SET is_verified = true WHERE user_id = :id", nativeQuery = true)
     void verifyUserById(@Param("id") Long id);
 
     @Modifying
-    @Query(value ="UPDATE user_info  SET is_active = true WHERE user_id = :id", nativeQuery = true)
+    @Query(value = "UPDATE user_info  SET is_active = true WHERE user_id = :id", nativeQuery = true)
     void setActive(@Param("id") Long id);
 
     @Modifying
-    @Query(value ="UPDATE user_info  SET is_active = false WHERE user_id = :id", nativeQuery = true)
+    @Query(value = "UPDATE user_info  SET is_active = false WHERE user_id = :id", nativeQuery = true)
     void setNotActive(@Param("id") Long id);
 
     @Modifying
-    @Query(value ="UPDATE user_info  SET is_show_friends = true WHERE user_id = :id", nativeQuery = true)
+    @Query(value = "UPDATE user_info  SET is_show_friends = true WHERE user_id = :id", nativeQuery = true)
     void setShowFriends(@Param("id") Long id);
 
     @Modifying
-    @Query(value ="UPDATE user_info  SET is_show_friends = false WHERE user_id = :id", nativeQuery = true)
+    @Query(value = "UPDATE user_info  SET is_show_friends = false WHERE user_id = :id", nativeQuery = true)
     void setNotShowFriend(@Param("id") Long id);
 
 

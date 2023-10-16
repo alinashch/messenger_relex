@@ -1,8 +1,8 @@
 package com.example.chat_relex.controller;
 
-import com.example.chat_relex.exceptions.EmailNotVerification;
-import com.example.chat_relex.models.Request.*;
-import com.example.chat_relex.models.dto.CredentialsDTO;
+import com.example.chat_relex.models.Request.LoginForm;
+import com.example.chat_relex.models.Request.RefreshTokenRequest;
+import com.example.chat_relex.models.Request.SignUpForm;
 import com.example.chat_relex.models.dto.ExceptionDTO;
 import com.example.chat_relex.models.dto.TokensDTO;
 import com.example.chat_relex.models.dto.UserDTO;
@@ -20,8 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 
 import static com.example.chat_relex.models.constant.Tag.AUTH;
 import static org.springframework.http.HttpStatus.*;

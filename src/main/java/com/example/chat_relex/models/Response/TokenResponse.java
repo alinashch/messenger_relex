@@ -1,6 +1,7 @@
 package com.example.chat_relex.models.Response;
-import lombok.*;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 @Data
 @AllArgsConstructor
 public class TokenResponse {

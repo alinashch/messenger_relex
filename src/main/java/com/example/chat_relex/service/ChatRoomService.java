@@ -9,15 +9,14 @@ import com.example.chat_relex.mapper.UserMapper;
 import com.example.chat_relex.models.Request.ChatRoomRequest;
 import com.example.chat_relex.models.Request.StartChatForm;
 import com.example.chat_relex.models.Response.ChatroomResponse;
-import com.example.chat_relex.models.dto.ChatRoomDTO;
 import com.example.chat_relex.models.dto.UserDTO;
 import com.example.chat_relex.models.entity.ChatRoom;
 import com.example.chat_relex.models.entity.User;
 import com.example.chat_relex.repository.ChatRoomRepository;
 import com.example.chat_relex.repository.UserRepository;
-import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
