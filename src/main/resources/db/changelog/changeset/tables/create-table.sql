@@ -83,3 +83,14 @@ create table IF NOT EXISTS verification
     user_id         bigint
         references user_info
 );
+
+
+INSERT  into role values (1,'USER'),(2,'ADMIN');
+
+
+
+
+
+
+
+
