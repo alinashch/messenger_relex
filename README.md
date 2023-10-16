@@ -134,7 +134,6 @@ https://drive.google.com/file/d/1HO80c64dAvmT1SgSjSx3a9_W809q_ikp/view?usp=shari
 - POST запрос по адресу http://localhost:8080/auth/verify/{code}, где {code}-код из письма.
   В примере 1. пришел код  5ab62be4-9c4d-42c3-9973-8fb96971e05b. Следовательно запрос на адрес http://localhost:8080/auth/verify/5ab62be4-9c4d-42c3-9973-8fb96971e05b
 > Примеры запросов
-
 1. Корректный код
 - request body:
   `{
@@ -148,6 +147,36 @@ https://drive.google.com/file/d/1HO80c64dAvmT1SgSjSx3a9_W809q_ikp/view?usp=shari
 - response (status: 201 Created) :
   `     "message": "This verification code does not exist",
   `
+## Повторная отправка кода на почту
+- POST запрос по адресу http://localhost:8080/auth/resend-code
+И в bearer token передать токен, полученный при регистрации.
+- ![img.png](img.png)
+> Примеры запросов
+1. Корректный токен
+- header Authorization: `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ1MjY4MCwicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.InM9CO2j2v-XBfM2-APwtUqJQboOFP_M14xCZwVcw-8}`
+- request body:
+  `{
+  }`
+- response (status: 200 Ok) :
+  `     
+  `
+2. некорректный токен
+- header Authorization: `{122222222}`
+- request body:
+  ``
+- response (status: 403 Forbidden) :
+  `     {"message": "The token was expected to have 3 parts, but got 0."
+  }
+  `
+3. Время дейсвия токена закончилось 
+- header Authorization: `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ1MjY4MCwicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.InM9CO2j2v-XBfM2-APwtUqJQboOFP_M14xCZwVcw-8}`
+- request body:
+  ``
+- response (status: 403 Forbidden) :
+  `     {"message": "The token was expected to have 3 parts, but got 0."
+  }
+  `
+## Авторизация почты
 
 
 
