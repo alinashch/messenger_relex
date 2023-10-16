@@ -55,9 +55,9 @@ https://drive.google.com/file/d/1HO80c64dAvmT1SgSjSx3a9_W809q_ikp/view?usp=shari
 # База данных
 > Для тестирования приложения были созданы следующие таблицы (создание происходило непосредственно при первом запуске проекта с помощью файла `db/changelog/db.changelog-master.yaml`, sql исходники находятся в `db/changelog/changeset/tables` )
 ## Настройка базы данны
-Чтобы приложение корректно запускалось нужно создать таблицу jdbc:postgresql://localhost:5432/relex_chat и в файле application.yml  указать password  и username в соответствующие строки.
+Чтобы приложение корректно запускалось нужно создать базу данных jdbc:postgresql://localhost:5432/relex_chat и в файле application.yml  указать password  и username в соответствующие строки.
 > Для корректной работы приложения таблица role должна содержать следующие данные. Вообще, Liquibase настроена, чтобы все автоматически вставилось в таблицу, но у вас может пойти что-то не так и тогда нужно вручную вставить данные
-- ![image.png](image.png)
+![image.png](image.png)
 
 # Запросы 
 Для многих некорректных запросов в postman  выводится stackTrace. С целью более понятных ответов на запросы, здесь вставлены только message, которые находятся в конце некорректного запроса.
@@ -187,16 +187,14 @@ POST запрос по адресу http://localhost:8080/auth/register
 - request body:
   ``
 - response (status: 403 Forbidden) :
-  `     {"message": "The token was expected to have 3 parts, but got 0."
-  }
+  `  {"message": "The token was expected to have 3 parts, but got 0."}
   `
 3. Время дейсвия токена закончилось 
 - header Authorization: `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ1MjY4MCwicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.InM9CO2j2v-XBfM2-APwtUqJQboOFP_M14xCZwVcw-8}`
 - request body:
   ``
 - response (status: 403 Forbidden) :
-  `     {    "message": "The Token has expired on 2023-10-16T10:38:00Z."
-  }
+  `     {"message": "The Token has expired on 2023-10-16T10:38:00Z."}
   `
 ### Авторизация 
 POST запрос по адресу http://localhost:8080/auth/login
@@ -220,8 +218,7 @@ C данными в теле пользователя, который уже б�
   "password":"12345678"
   }`
 - response (status: 404 Not Found) :
-  `{    "message": "The user with this login does not exist",
-  }`
+  `{"message": "The user with this login does not exist",}`
 
 3. Некорректный пароль
 - request body:
@@ -230,8 +227,7 @@ C данными в теле пользователя, который уже б�
   "password":"test"
   }`
 - response (status: 400 Bad Request) :
-  `{        "message": "wrong password",
-  }`
+  `{"message": "wrong password",}`
 
 ### Выход из мессенджера 
 POST запрос по адресу http://localhost:8080/auth/signOut
@@ -239,67 +235,90 @@ POST запрос по адресу http://localhost:8080/auth/signOut
 1. Корректный заголовок и верифицированный email
 - Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
 - request body:
-  `{
-  }`
+  `{}`
 - response (status: 204 No Content) :
-  `{       
-  }`
+  `{}`
 2. Корректный заголовок и не верифицированный email
 - Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
 - request body:
-  `{
-  }`
+  `{}`
 - response (status: 405 Method Not Allowed) :
-  `{            "message": "The email is not verification ",
-  }`
+  `{"message": "The email is not verification ",}`
 3. Некорректный заголовок
 - header Authorization: `{122222222}`
 - request body:
   ``
 - response (status: 403 Forbidden) :
-  `     {"message": "The token was expected to have 3 parts, but got 0."
-  }
+  ` {"message": "The token was expected to have 3 parts, but got 0."}
   `
 ## Chat API
 > Для старта чата нужно передать токен в заголовке и в теле запроса ник пользователя, которому хотим отправить сообщение. 
 > Аккаунт отправителя и получателя должны быть активны и верифицированы.
 > Также у пользователей должно стоять, чтобы можно было получать сообщения от всех или они должны быть друг у друга в друзьях
-1. старт чата
+### старт chat-room
    POST запрос по адресу http://localhost:8080/auth/signOut
 > Примеры запросов
 1. Корректный запрос и токен
 - Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
 - request body:
-  `{ "chatRoomId": 13
-  }`
+  `{"recipientNickname":"petp"}`
 - response (status: 200 OK) :
-  `{   
-   "recipientNickname":"petp"
-  }`
+  `{ "chatRoomId": 13}`
 2. Корректный токен, но получатель перевел аккаунт в статус "Не активен"
 - Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
 - request body:
-  `{     "recipientNickname":"natasha"
-  }`
+  `{"recipientNickname":"natasha"}`
 - response (status: 403 Forbidden) :
-  `{       
-  "message": "The user is not active",
-  }`
+  `{"message": "The user is not active",}`
 3. Корректный токен, но email не верифицирован
 - Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
 - request body:
-  `{        "recipientNickname":"mashenka"
-  }`
+  `{"recipientNickname":"mashenka"}`
 - response (status: 405 Method Not Allowed) :
-  `{       
-  "message": "The email is not verification ",
-  }`
+  `{"message": "The email is not verification ",}`
 4. Корректный токен, но пользователь поставил, что ему могут писать только друзья
 - Header authorization `{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNSIsImV4cCI6MTY5NzQ2MjU2Mywicm9sZXMiOlsiVVNFUiJdLCJlbWFpbCI6ImFsaW5hMjgwNzAyQG1haWwucnUiLCJsb2dpbiI6ImFsaW5hLWFsaW5hIiwibmlja25hbWUiOiJhbGluYV9zaGNoIiwiZnVsbE5hbWUiOiLQkNC70LjQvdCwINCp0LXRgNCx0LjQvdC40L3QsCJ9.mG8yBE5nLc8XDHeuY3yz7ImcJ1sr_6g-pL6n-67aT60}`
 - request body:
-  `{        "recipientNickname":"Vasya"
-  }`
+  `{"recipientNickname":"Vasya"}`
 - response (status: 405 Method Not Allowed) :
-  `{       
-  "message": "Not on the friends list",
-  }`
+  `{"message": "Not on the friends list"}`
+
+### старт чата, если пользователи раньше не переписывались 
+1. В postman выбираем socket.io 
+![img_1.png](img_1.png)
+2. Переходим в настройки и выбираем v2
+![img_2.png](img_2.png)
+3. В параметры вводим chatRoomId, полученный из предыдущего шагв(в нашем примере 13) и senderNickname.
+![img_3.png](img_3.png)
+4. Переходим в параметры. И задаем events и включаем listen
+![img_4.png](img_4.png)
+5. Нажимаем connect  и должно подключиться
+![img_6.png](img_6.png)
+6. Повторяем шаги 1-5 для второго пользователя- получателя
+7. И вводим сообщение в формате json: 
+   `{
+   "message":"Как дела?"
+   }`
+8. И вводим send_message
+![img_7.png](img_7.png)
+9. Видим, что сообщение отправлено
+   send_message { "message":"Привет" }
+![img_9.png](img_9.png)
+10. Переходим на страницу получателя и видим полученное сообщение
+    `{
+    "message": "Привет",
+    "userSender": {
+    "nickname": "alina_shch",
+    "firstName": "Алина",
+    "lastName": "Щербинина"
+    }
+    }`
+![img_8.png](img_8.png)
+
+### старт чата, если пользователи переписывались уже
+> При старте чата вернется chatRoom, по которому уже переписывались пользователи. 
+> При подключении пользователи будем выведена история общений
+
+![img_10.png](img_10.png)
+
+## Friend API
