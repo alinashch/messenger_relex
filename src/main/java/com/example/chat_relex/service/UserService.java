@@ -202,7 +202,7 @@ public class UserService {
     public UserDTO getUserByLogin(String login) {
 
         User user = userRepository.getByLogin(login).orElseThrow(
-                () -> new EntityDoesNotExistException("The user with this username does not exist")
+                () -> new EntityDoesNotExistException("The user with this login does not exist")
         );
         return userMapper.toDTOFromEntity(user);
     }
